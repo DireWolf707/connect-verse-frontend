@@ -5,7 +5,8 @@ const Logo = () => {
   return (
     <Link href="/">
       <div className="flex items-center">
-        <Image src="/logo.svg" width={56} height={20} alt="logo" />
+        <Image src="/logo.svg" width={56} height={56} alt="logo" />
+
         <p className="flex gap-0.5 text-xl">
           <span>Wolf</span>
           <span className="text-red-500">Overflow</span>

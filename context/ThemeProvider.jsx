@@ -1,2 +1,4 @@
 "use client"
-export { ThemeProvider } from "next-themes"
+import { ThemeProvider } from "next-themes"
+
+export default ThemeProvider

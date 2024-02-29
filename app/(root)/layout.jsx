@@ -1,16 +1,19 @@
+"use client"
 import LeftSidebar from "@/components/shared/LeftSidebar"
-import Navbar from "@/components/shared/navbar/Navbar"
+import ProtectedRoute from "@/components/wrapper/ProtectedRoute"
+import SocketProvider from "@/context/SocketProvider"
 
 const Layout = ({ children }) => {
   return (
-    <>
-      <Navbar />
+    <ProtectedRoute>
+      <SocketProvider>
+        <div className="flex grow overflow-auto">
+          <LeftSidebar />
 
-      <div className="flex grow overflow-auto">
-        <LeftSidebar />
-        <div className="grow p-4">{children}</div>
-      </div>
-    </>
+          <div className="grow p-4">{children}</div>
+        </div>
+      </SocketProvider>
+    </ProtectedRoute>
   )
 }
 
