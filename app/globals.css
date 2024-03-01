@@ -12,6 +12,27 @@ html {
   scroll-behavior: smooth;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(121, 82, 228);
+  border-radius: 12px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(89, 53, 189);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
