@@ -20,11 +20,7 @@ const SocketProvider = ({ children }) => {
     })
 
     socket.io.on("reconnect_attempt", () =>
-      toast.loading("Reconnecting!", socketToastOptions)
-    )
-
-    socket.io.on("reconnect", () =>
-      toast.success("Reconnected!", socketToastOptions)
+      toast.loading("Connecting...", socketToastOptions)
     )
 
     socket.io.on("reconnect_failed", () =>
@@ -33,7 +29,7 @@ const SocketProvider = ({ children }) => {
 
     socket.on("connect", () => {
       setSocket(socket)
-      console.log("websocket connected")
+      toast.success("Connected!", socketToastOptions)
     })
 
     socket.on("disconnect", () => {
@@ -41,6 +37,7 @@ const SocketProvider = ({ children }) => {
       console.log("websocket disconnected")
     })
 
+    toast.loading("Connecting...", socketToastOptions)
     socket.connect()
 
     return () => socket.disconnect()
