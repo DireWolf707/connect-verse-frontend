@@ -3,15 +3,16 @@ import Link from "next/link"
 
 const Logo = () => {
   return (
-    <Link href="/">
-      <div className="flex items-center">
-        <Image src="/logo.svg" width={56} height={56} alt="logo" />
+    <Link
+      href="/"
+      className="flex items-center justify-center bg-black/10 dark:bg-white/10"
+    >
+      <Image src="/logo.svg" width={50} height={50} alt="logo" />
 
-        <p className="flex gap-0.5 text-xl">
-          <span>Wolf</span>
-          <span className="text-red-500">Overflow</span>
-        </p>
-      </div>
+      <p className="flex justify-center gap-1 text-center text-xl font-bold">
+        <span>Connect</span>
+        <span className="text-red-500">Verse</span>
+      </p>
     </Link>
   )
 }

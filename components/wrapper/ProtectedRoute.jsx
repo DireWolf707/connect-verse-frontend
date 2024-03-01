@@ -1,5 +1,5 @@
 "use client"
-import UserLogin from "@/components/shared/UserLogin"
+import UserLogin from "@/components/shared/user/UserLogin"
 import { useQueryClient } from "@tanstack/react-query"
 
 const ProtectedRoute = ({ children }) => {

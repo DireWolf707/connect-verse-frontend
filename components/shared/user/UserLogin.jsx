@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 
 const LoginButton = ({ href, src, alt }) => (
   <Button asChild variant="link" className="bg-white">

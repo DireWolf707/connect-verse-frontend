@@ -1,24 +1,25 @@
-import { MoonIcon, SunIcon } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "../../ui/button"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu"
+import { MoonIcon, SunIcon } from "lucide-react"
+import { useTheme } from "next-themes"
 
 const ThemeToggleButton = () => {
   const { setTheme } = useTheme()
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <SunIcon className="fill-red-500 stroke-red-500 dark:hidden" />
-          <MoonIcon className="hidden fill-red-500 stroke-none dark:block" />
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <SunIcon className="size-7 fill-yellow-500 stroke-yellow-600 dark:hidden" />
+          <MoonIcon className="hidden size-7 fill-white stroke-none dark:block" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+
+      <DropdownMenuContent side="right">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Light
         </DropdownMenuItem>
