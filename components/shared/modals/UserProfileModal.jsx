@@ -14,10 +14,10 @@ import { Label } from "@/components/ui/label"
 import { useQueryClient } from "@tanstack/react-query"
 import UserAvatar from "../user/UserAvatar"
 
-const UserProfileInput = () => (
-  <div className="grid grid-cols-4 items-center gap-4">
-    <Label className="text-right">Username</Label>
-    <Input id="username" defaultValue="@peduarte" className="col-span-3" />
+const UserProfileInput = ({ label, value }) => (
+  <div className="flex flex-col gap-2">
+    <Label>{label}</Label>
+    <Input value={value} className="bg-black/10 dark:bg-white/10" />
   </div>
 )
 
@@ -40,10 +40,13 @@ const UserProfileModal = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-3">
-          <UserProfileInput />
-          <UserProfileInput />
-          <UserProfileInput />
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-center">
+            <UserAvatar user={user} size="size-36" />
+          </div>
+          <UserProfileInput label="Email" value={user.email} />
+          <UserProfileInput label="Username" value={user.username} />
+          <UserProfileInput label="Name" value={user.name} />
         </div>
 
         <DialogFooter>
