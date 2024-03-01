@@ -9,7 +9,7 @@ const authToastOptions = { id: "auth-check" }
 
 const AuthProvider = ({ children }) => {
   const [isServerSleeping, setIsServerSleeping] = useState(false)
-  const { isLoading, isError, isSuccess } = useQuery({
+  const { isFetching, isError, isSuccess } = useQuery({
     queryKey: ["me"],
     queryFn: () => Q.get("/user/me").then((res) => res.data),
   })
@@ -24,7 +24,7 @@ const AuthProvider = ({ children }) => {
         "Server is sleeping, please try again later...",
         authToastOptions
       )
-    else if (isLoading) {
+    else if (isFetching) {
       timeout = setTimeout(() => {
         setIsServerSleeping(true)
         toast.loading(
@@ -36,9 +36,9 @@ const AuthProvider = ({ children }) => {
       return () => clearTimeout(timeout)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isSuccess, isError])
+  }, [isFetching, isSuccess, isError])
 
-  if (isLoading || isError) return <Circles />
+  if (isFetching || isError) return <Circles />
 
   return children
 }
