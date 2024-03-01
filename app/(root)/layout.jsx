@@ -7,11 +7,9 @@ const Layout = ({ children }) => {
   return (
     <ProtectedRoute>
       <SocketProvider>
-        <div className="flex grow overflow-auto">
-          <LeftSidebar />
+        <LeftSidebar />
 
-          <div className="grow p-4">{children}</div>
-        </div>
+        <div className="grow p-4">{children}</div>
       </SocketProvider>
     </ProtectedRoute>
   )
