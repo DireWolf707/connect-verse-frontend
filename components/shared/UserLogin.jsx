@@ -3,8 +3,8 @@ import Link from "next/link"
 import { Button } from "../ui/button"
 
 const LoginButton = ({ href, src, alt }) => (
-  <Button asChild variant="link" className="gap-2 bg-white">
-    <Link href={href}>
+  <Button asChild variant="link" className="bg-white">
+    <Link href={href} className="flex gap-2">
       <Image src={src} alt={alt} width={28} height={28} />
       <span className="font-[600] text-black">Login with Google</span>
     </Link>
