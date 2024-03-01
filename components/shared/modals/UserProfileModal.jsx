@@ -12,6 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useQueryClient } from "@tanstack/react-query"
+import { Trash2Icon } from "lucide-react"
 import { useState } from "react"
 import FileUploadButton from "../buttons/FileUploadButton"
 import UserAvatar from "../user/UserAvatar"
@@ -44,13 +45,22 @@ const UserProfileModal = () => {
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
-          <div className="flex justify-center">
+          <div className="relative flex items-center justify-center gap-2 self-center">
             <UserAvatar
               src={avatar?.preview || user.avatar}
               username={user.username}
               size="size-36"
             />
+
+            <Button
+              size="link"
+              variant="destructive"
+              className="absolute right-[-20%] top-[50%] translate-x-[50%] translate-y-[-50%] rounded-full p-2"
+            >
+              <Trash2Icon />
+            </Button>
           </div>
+
           <FileUploadButton setFile={setAvatar} />
           <UserProfileInput label="Email" value={user.email} />
           <UserProfileInput label="Username" value={user.username} />
