@@ -3,11 +3,7 @@ import Link from "next/link"
 import { Button } from "../ui/button"
 
 const LoginButton = ({ href, src, alt }) => (
-  <Button
-    asChild
-    variant="link"
-    className="gap-2 border-2 border-violet-400 bg-white"
-  >
+  <Button asChild variant="link" className="gap-2 bg-white">
     <Link href={href}>
       <Image src={src} alt={alt} width={28} height={28} />
       <span className="font-[600] text-black">Login with Google</span>
@@ -17,7 +13,7 @@ const LoginButton = ({ href, src, alt }) => (
 
 const UserLogin = () => {
   return (
-    <div className="flex grow items-center justify-center">
+    <div className="flex grow items-center justify-center bg-black">
       <div className="flex flex-col gap-2">
         <LoginButton
           href={`${process.env.NEXT_PUBLIC_SERVER_URL}/user/login/google`}
