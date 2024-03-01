@@ -12,26 +12,29 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
+import FileUploadButton from "../buttons/FileUploadButton"
 import UserAvatar from "../user/UserAvatar"
 
 const UserProfileInput = ({ label, value }) => (
   <div className="flex flex-col gap-2">
     <Label>{label}</Label>
-    <Input value={value} className="bg-black/10 dark:bg-white/10" />
+    <Input defaultValue={value} className="bg-black/10 dark:bg-white/10" />
   </div>
 )
 
 const UserProfileModal = () => {
+  const [avatar, setAvatar] = useState(null)
   const queryClient = useQueryClient()
   const { data: user } = queryClient.getQueryData(["me"])
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={(open) => !open && setAvatar(null)}>
       <DialogTrigger>
-        <UserAvatar user={user} />
+        <UserAvatar src={user.avatar} username={user.username} />
       </DialogTrigger>
 
-      <DialogContent className="w-[420px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Profile</DialogTitle>
 
@@ -42,8 +45,13 @@ const UserProfileModal = () => {
 
         <div className="flex flex-col gap-4">
           <div className="flex justify-center">
-            <UserAvatar user={user} size="size-36" />
+            <UserAvatar
+              src={avatar?.preview || user.avatar}
+              username={user.username}
+              size="size-36"
+            />
           </div>
+          <FileUploadButton setFile={setAvatar} />
           <UserProfileInput label="Email" value={user.email} />
           <UserProfileInput label="Username" value={user.username} />
           <UserProfileInput label="Name" value={user.name} />
