@@ -1,7 +1,6 @@
 "use client"
 import Circles from "@/components/shared/loading/Circles"
-import { Q } from "@/lib/axios_client"
-import { useQuery } from "@tanstack/react-query"
+import { useUser } from "@/state/apis/userApi"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
@@ -9,10 +8,7 @@ const authToastOptions = { id: "auth-check" }
 
 const AuthProvider = ({ children }) => {
   const [isServerSleeping, setIsServerSleeping] = useState(false)
-  const { isFetching, isError, isSuccess } = useQuery({
-    queryKey: ["me"],
-    queryFn: () => Q.get("/user/me").then((res) => res.data),
-  })
+  const { isLoading, isError, isSuccess } = useUser()
 
   useEffect(() => {
     let timeout = null
@@ -24,7 +20,7 @@ const AuthProvider = ({ children }) => {
         "Server is sleeping, please try again later...",
         authToastOptions
       )
-    else if (isFetching) {
+    else if (isLoading) {
       timeout = setTimeout(() => {
         setIsServerSleeping(true)
         toast.loading(
@@ -35,10 +31,9 @@ const AuthProvider = ({ children }) => {
 
       return () => clearTimeout(timeout)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, isSuccess, isError])
+  }, [isLoading, isSuccess, isError])
 
-  if (isFetching || isError) return <Circles />
+  if (isLoading || isError) return <Circles />
 
   return children
 }

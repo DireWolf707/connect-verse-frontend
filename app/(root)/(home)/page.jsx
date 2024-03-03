@@ -1,8 +1,8 @@
 "use client"
-import { useSocketStore } from "@/lib/store"
+import { useSocket } from "@/state/store"
 
 const Me = () => {
-  const socket = useSocketStore((state) => state.socket)
+  const socket = useSocket((state) => state.socket)
 
   return <div>Me</div>
 }

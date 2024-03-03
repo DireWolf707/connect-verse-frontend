@@ -1,10 +1,9 @@
 "use client"
 import UserLogin from "@/components/shared/user/UserLogin"
-import { useQueryClient } from "@tanstack/react-query"
+import { useUser } from "@/state/apis/userApi"
 
 const ProtectedRoute = ({ children }) => {
-  const queryClient = useQueryClient()
-  const { data: user } = queryClient.getQueryData(["me"])
+  const { data: user } = useUser()
 
   if (!user) return <UserLogin />
   return children

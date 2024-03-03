@@ -10,6 +10,7 @@ import { useTheme } from "next-themes"
 
 const ThemeToggleButton = () => {
   const { setTheme } = useTheme()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

@@ -4,5 +4,10 @@
     "next/core-web-vitals",
     "plugin:tailwindcss/recommended",
     "plugin:@tanstack/eslint-plugin-query/recommended"
-  ]
+  ],
+
+  "rules": {
+    "@tanstack/query/exhaustive-deps": "off",
+    "react-hooks/exhaustive-deps": "off"
+  }
 }

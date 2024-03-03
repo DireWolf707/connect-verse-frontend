@@ -9,30 +9,64 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useQueryClient } from "@tanstack/react-query"
+import { useUpdateUser, useUser } from "@/state/apis/userApi"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2Icon } from "lucide-react"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import FileUploadButton from "../buttons/FileUploadButton"
 import UserAvatar from "../user/UserAvatar"
 
-const UserProfileInput = ({ label, value }) => (
-  <div className="flex flex-col gap-2">
-    <Label>{label}</Label>
-    <Input defaultValue={value} className="bg-black/10 dark:bg-white/10" />
-  </div>
+const formSchema = z.object({
+  username: z.string().min(2).max(50),
+  name: z.string().min(2).max(50),
+})
+
+const UserProfileInput = ({ field }) => (
+  <FormItem>
+    <FormLabel className="capitalize">{field.name}</FormLabel>
+
+    <FormControl>
+      <Input {...field} className="bg-black/10 dark:bg-white/15" />
+    </FormControl>
+
+    <FormMessage />
+  </FormItem>
 )
+
+const getDefaultValues = (user) => ({
+  email: user.email,
+  username: user.username,
+  name: user.name,
+})
 
 const UserProfileModal = () => {
   const [avatar, setAvatar] = useState(null)
-  const queryClient = useQueryClient()
-  const { data: user } = queryClient.getQueryData(["me"])
+  const { data: user } = useUser()
+  const { handler: updateUser, isPending } = useUpdateUser()
 
-  const onCloseHandler = (open) => !open && setAvatar(null)
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: getDefaultValues(user),
+  })
+
+  const modalCloseHandler = (open) => !open && setAvatar(null)
+
+  const formSubmitHandler = (data) =>
+    updateUser(data).then((user) => form.reset(getDefaultValues(user)))
 
   return (
-    <Dialog onOpenChange={onCloseHandler}>
+    <Dialog onOpenChange={modalCloseHandler}>
       <DialogTrigger>
         <UserAvatar src={user.avatar} username={user.username} />
       </DialogTrigger>
@@ -42,7 +76,7 @@ const UserProfileModal = () => {
           <DialogTitle>Update Profile</DialogTitle>
 
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Make changes to your profile here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
 
@@ -64,16 +98,39 @@ const UserProfileModal = () => {
               </Button>
             )}
           </div>
+
           <FileUploadButton setFile={setAvatar} />
 
-          <UserProfileInput label="Email" value={user.email} />
-          <UserProfileInput label="Username" value={user.username} />
-          <UserProfileInput label="Name" value={user.name} />
-        </div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(formSubmitHandler)}
+              className="flex flex-col gap-4"
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                disabled={true}
+                render={UserProfileInput}
+              />
 
-        <DialogFooter>
-          <Button>Save changes</Button>
-        </DialogFooter>
+              <FormField
+                control={form.control}
+                name="username"
+                render={UserProfileInput}
+              />
+
+              <FormField
+                control={form.control}
+                name="name"
+                render={UserProfileInput}
+              />
+
+              <DialogFooter>
+                <Button disabled={isPending}>Save changes</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </div>
       </DialogContent>
     </Dialog>
   )
