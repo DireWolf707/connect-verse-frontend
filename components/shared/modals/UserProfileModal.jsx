@@ -29,8 +29,10 @@ const UserProfileModal = () => {
   const queryClient = useQueryClient()
   const { data: user } = queryClient.getQueryData(["me"])
 
+  const onCloseHandler = (open) => !open && setAvatar(null)
+
   return (
-    <Dialog onOpenChange={(open) => !open && setAvatar(null)}>
+    <Dialog onOpenChange={onCloseHandler}>
       <DialogTrigger>
         <UserAvatar src={user.avatar} username={user.username} />
       </DialogTrigger>
@@ -52,16 +54,18 @@ const UserProfileModal = () => {
               size="size-36"
             />
 
-            <Button
-              size="link"
-              variant="destructive"
-              className="absolute right-[-20%] top-[50%] translate-x-[50%] translate-y-[-50%] rounded-full p-2"
-            >
-              <Trash2Icon />
-            </Button>
+            {user.avatar && (
+              <Button
+                size="link"
+                variant="destructive"
+                className="absolute right-[-20%] top-[50%] translate-x-[50%] translate-y-[-50%] rounded-full p-2"
+              >
+                <Trash2Icon />
+              </Button>
+            )}
           </div>
-
           <FileUploadButton setFile={setAvatar} />
+
           <UserProfileInput label="Email" value={user.email} />
           <UserProfileInput label="Username" value={user.username} />
           <UserProfileInput label="Name" value={user.name} />
