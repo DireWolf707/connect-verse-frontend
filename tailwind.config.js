@@ -21,6 +21,14 @@ module.exports = {
       screens: {
         xs: "420px",
       },
+      // NAV HEIGHT
+      height: {
+        navbar: "56px",
+      },
+      // SIDEBAR WIDTH
+      width: {
+        sidebar: "260px",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

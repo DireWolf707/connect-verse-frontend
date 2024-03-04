@@ -10,7 +10,7 @@ const font = Righteous({
 
 const Logo = () => {
   return (
-    <Link href="/" className="flex items-center justify-center">
+    <Link href="/" className="flex h-navbar  items-center justify-center">
       <Image src="/logo.svg" width={50} height={50} alt="logo" priority />
 
       <p
