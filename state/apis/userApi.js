@@ -28,3 +28,15 @@ export const useUpdateUser = () => {
     onSuccess: (data) => queryClient.setQueryData(["me"], data),
   })
 }
+
+export const useDeleteAvatar = () => {
+  const queryClient = useQueryClient()
+
+  return useGeneralMutation({
+    url: "/user/avatar",
+    method: "delete",
+    loadingMsg: "Deleting avatar",
+    successMsg: "Avatar Deleted",
+    onSuccess: (data) => queryClient.setQueryData(["me"], data),
+  })
+}

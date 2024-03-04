@@ -1,18 +1,19 @@
 "use client"
 import { useDropzone } from "react-dropzone"
 
-const FileUploadButton = ({ file, setFile }) => {
+const FileUploadButton = ({ file: oldFile, setFile, disabled }) => {
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     accept: {
       "image/*": [],
     },
     onDrop: (files) => {
-      const file = files[0]
-      if (!file) return
+      const newFile = files[0]
+      if (!newFile) return
 
-      Object.assign(file, { preview: URL.createObjectURL(file) })
-      setFile(file)
+      if (oldFile) URL.revokeObjectURL(oldFile.preview)
+      newFile.preview = URL.createObjectURL(newFile)
+      setFile(newFile)
     },
   })
 
@@ -21,7 +22,7 @@ const FileUploadButton = ({ file, setFile }) => {
       {...getRootProps()}
       className="cursor-pointer rounded-xl border-2 border-dashed border-black bg-black/10 p-2 text-center text-sm dark:border-white dark:bg-white/10"
     >
-      <input {...getInputProps()} />
+      <input {...getInputProps()} disabled={disabled} />
       <p>Drag & drop some file here, or</p>
       <p>click to select file</p>
     </div>

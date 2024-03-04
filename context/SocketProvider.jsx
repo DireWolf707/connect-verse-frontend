@@ -16,7 +16,7 @@ const SocketProvider = ({ children }) => {
     const socket = io(process.env.NEXT_PUBLIC_SERVER_URL, {
       autoConnect: false,
       withCredentials: true,
-      reconnectionAttempts: 3,
+      reconnectionAttempts: 10,
     })
 
     socket.io.on("reconnect_attempt", () =>

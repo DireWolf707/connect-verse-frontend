@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useUpdateUser, useUser } from "@/state/apis/userApi"
+import { useDeleteAvatar, useUpdateUser, useUser } from "@/state/apis/userApi"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2Icon } from "lucide-react"
 import { useState } from "react"
@@ -35,11 +35,9 @@ const formSchema = z.object({
 const UserProfileInput = ({ field }) => (
   <FormItem>
     <FormLabel className="capitalize">{field.name}</FormLabel>
-
     <FormControl>
       <Input {...field} className="bg-black/10 dark:bg-white/15" />
     </FormControl>
-
     <FormMessage />
   </FormItem>
 )
@@ -53,17 +51,36 @@ const getDefaultValues = (user) => ({
 const UserProfileModal = () => {
   const [avatar, setAvatar] = useState(null)
   const { data: user } = useUser()
-  const { handler: updateUser, isPending } = useUpdateUser()
+  const { handler: updateUser, isPending: isUserUpdatePending } =
+    useUpdateUser()
+  const { handler: deleteAvatar, isPending: isAvatarDeletePending } =
+    useDeleteAvatar()
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: getDefaultValues(user),
   })
 
-  const modalCloseHandler = (open) => !open && setAvatar(null)
+  const resetAvatar = () => {
+    if (!avatar) return
+    URL.revokeObjectURL(avatar.preview)
+    setAvatar(null)
+  }
 
-  const formSubmitHandler = (data) =>
-    updateUser(data).then((user) => form.reset(getDefaultValues(user)))
+  const modalCloseHandler = (open) => !open && resetAvatar()
+
+  const avatarDeleteHandler = () => deleteAvatar().finally(resetAvatar)
+
+  const formSubmitHandler = (data) => {
+    const formData = new FormData()
+    formData.append("name", data.name)
+    formData.append("username", data.username)
+    if (avatar) formData.append("avatar", avatar)
+
+    updateUser(formData)
+      .then((user) => form.reset(getDefaultValues(user)))
+      .finally(resetAvatar)
+  }
 
   return (
     <Dialog onOpenChange={modalCloseHandler}>
@@ -90,6 +107,8 @@ const UserProfileModal = () => {
 
             {user.avatar && (
               <Button
+                onClick={avatarDeleteHandler}
+                disabled={isAvatarDeletePending}
                 size="link"
                 variant="destructive"
                 className="absolute right-[-20%] top-[50%] translate-x-[50%] translate-y-[-50%] rounded-full p-2"
@@ -99,7 +118,11 @@ const UserProfileModal = () => {
             )}
           </div>
 
-          <FileUploadButton setFile={setAvatar} />
+          <FileUploadButton
+            file={avatar}
+            setFile={setAvatar}
+            disabled={isUserUpdatePending || isAvatarDeletePending}
+          />
 
           <Form {...form}>
             <form
@@ -112,21 +135,18 @@ const UserProfileModal = () => {
                 disabled={true}
                 render={UserProfileInput}
               />
-
               <FormField
                 control={form.control}
                 name="username"
                 render={UserProfileInput}
               />
-
               <FormField
                 control={form.control}
                 name="name"
                 render={UserProfileInput}
               />
-
               <DialogFooter>
-                <Button disabled={isPending}>Save changes</Button>
+                <Button disabled={isUserUpdatePending}>Save changes</Button>
               </DialogFooter>
             </form>
           </Form>
