@@ -12,7 +12,7 @@ const ServerSidebar = () => {
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col items-center justify-between bg-black/10 px-1 py-2 pt-1 dark:bg-white/10">
+    <div className="flex flex-col items-center justify-between px-1 py-2 pt-1">
       <div className="flex flex-col gap-2 overflow-auto px-1">
         {navLinks.map((link) => {
           const isActive = pathname === link.route

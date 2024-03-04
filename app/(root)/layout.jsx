@@ -9,18 +9,16 @@ const Layout = ({ children }) => {
   return (
     <ProtectedRoute>
       <SocketProvider>
-        <div className="flex">
-          <div className="flex flex-col">
-            <Logo />
+        <div className="flex flex-col bg-black/10 dark:bg-white/10">
+          <Logo />
 
-            <div className="flex grow">
-              <ServerSidebar />
-              <ChannelSidebar />
-            </div>
+          <div className="flex grow">
+            <ServerSidebar />
+            <ChannelSidebar />
           </div>
-
-          <div className="grow p-4">{children}</div>
         </div>
+
+        <div className="grow p-4">{children}</div>
       </SocketProvider>
     </ProtectedRoute>
   )
