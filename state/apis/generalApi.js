@@ -11,13 +11,14 @@ export const useGeneralQuery = ({ queryKey, url }) =>
 
 export const useGeneralMutation = ({
   url,
+  method = "post",
   onSuccess,
   onError,
   successMsg,
   loadingMsg,
 }) => {
   const mutation = useMutation({
-    mutationFn: (data) => Q.post(url, data).then((res) => res.data),
+    mutationFn: (data) => Q({ url, method, data }).then((res) => res.data),
   })
 
   const handler = useCallback(
