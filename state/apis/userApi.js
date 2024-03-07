@@ -40,3 +40,11 @@ export const useDeleteAvatar = () => {
     onSuccess: (data) => queryClient.setQueryData(["me"], data),
   })
 }
+
+export const useSearchUser = () =>
+  useGeneralMutation({
+    url: "/user/search",
+    method: "post",
+    loadingMsg: "Searching users",
+    successMsg: "Search complete",
+  })
