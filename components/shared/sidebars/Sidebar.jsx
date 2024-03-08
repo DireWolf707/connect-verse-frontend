@@ -1,16 +1,23 @@
+import { usePathname } from "next/navigation"
 import Logo from "../navbar/Logo"
 import ChannelSidebar from "./ChannelSidebar"
+import ConversationSidebar from "./ConversationSidebar"
 import ServerSidebar from "./ServerSidebar"
 
-const Sidebar = () => (
-  <div className="flex w-sidebar flex-col bg-black/10 dark:bg-white/10">
-    <Logo />
+const Sidebar = () => {
+  const pathname = usePathname()
 
-    <div className="flex grow">
-      <ServerSidebar />
-      <ChannelSidebar />
+  return (
+    <div className="flex w-sidebar flex-col bg-black/10 dark:bg-white/10">
+      <Logo />
+
+      <div className="flex grow">
+        <ServerSidebar />
+        {pathname.startsWith("/conversation") && <ConversationSidebar />}
+        {pathname.startsWith("/server") && <ChannelSidebar />}
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default Sidebar

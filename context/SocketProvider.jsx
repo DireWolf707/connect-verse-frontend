@@ -9,7 +9,7 @@ const socketToastOptions = { id: "socket-check" }
 
 const SocketProvider = ({ children }) => {
   const setSocket = useSocket((state) => state.setSocket)
-  const unsetSocket = useSocket((state) => state.unsetSocket)
+  const resetSocket = useSocket((state) => state.resetSocket)
   const socket = useSocket((state) => state.socket)
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const SocketProvider = ({ children }) => {
     })
 
     socket.on("disconnect", () => {
-      unsetSocket()
+      resetSocket()
       console.log("websocket disconnected")
     })
 

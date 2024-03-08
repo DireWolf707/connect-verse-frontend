@@ -13,12 +13,12 @@ import LogoutButton from "../buttons/LogoutButton"
 import ThemeToggleButton from "../buttons/ThemeToggleButton"
 import UserProfileModal from "../modals/UserProfileModal"
 
-const ServerIcon = ({ text, Icon, active }) => (
+const ServerIcon = ({ text, active, Icon }) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
         <Icon
-          className={cn("size-8 p-1 rounded-lg", {
+          className={cn("size-8 p-1 rounded-lg cursor-pointer", {
             "bg-violet-600 text-white": active,
           })}
         />

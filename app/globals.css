@@ -88,3 +88,9 @@ html {
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .text-main {
+    @apply text-xs font-[600] text-slate-600 dark:text-slate-300;
+  }
+}
