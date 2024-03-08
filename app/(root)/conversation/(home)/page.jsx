@@ -1,10 +1,6 @@
 "use client"
-import { useSocket } from "@/state/store"
+import Waving from "@/components/shared/loading/Waving"
 
-const Me = () => {
-  const socket = useSocket((state) => state.socket)
+const Home = () => <Waving className="size-56" />
 
-  return <div></div>
-}
-
-export default Me
+export default Home

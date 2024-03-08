@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
           <Sidebar />
         </div>
 
-        <div className="grow">
+        <div className="flex grow flex-col">
           <Navbar />
           {children}
         </div>
