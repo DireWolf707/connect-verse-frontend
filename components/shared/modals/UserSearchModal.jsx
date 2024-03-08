@@ -4,8 +4,8 @@ import { useSearchUser } from "@/state/apis/userApi"
 import { PlusIcon } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import UserCard from "../cards/UserCard"
 import SpinnerText from "../loading/SpinnerText"
-import UserAvatar from "../user/UserAvatar"
 
 const UserSearchModal = () => {
   const [open, setOpen] = useState(false)
@@ -50,19 +50,14 @@ const UserSearchModal = () => {
         )}
 
         {isSuccess &&
-          data.map(({ id, name, avatar, username }) => (
+          data.map((user) => (
             <Link
-              key={id}
-              href={`/conversation/${id}`}
+              key={user.id}
+              href={`/conversation/${user.id}`}
               onClick={onCloseHandler}
-              className="flex items-center gap-3 p-3 hover:bg-black/15 dark:hover:bg-white/15"
+              className="p-3 hover:bg-black/15 dark:hover:bg-white/15"
             >
-              <UserAvatar src={avatar} username={username} />
-
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold">{username}</span>
-                <span className="text-xs font-light">({name})</span>
-              </div>
+              <UserCard user={user} />
             </Link>
           ))}
       </CommandDialog>

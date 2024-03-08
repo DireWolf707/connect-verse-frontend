@@ -1,15 +1,13 @@
 "use client"
-import { HashIcon } from "lucide-react"
+import { useUI } from "@/state/store"
 import MobileNavbar from "./MobileNavbar"
 
 const Navbar = () => {
+  const HeaderComponent = useUI((state) => state.HeaderComponent)
+
   return (
     <div className="flex h-navbar items-center justify-between bg-black/10 px-4 dark:bg-white/10">
-      <div className="flex items-center gap-1">
-        <HashIcon />
-        <span className="text-xl font-medium">general</span>
-      </div>
-
+      {HeaderComponent}
       <MobileNavbar />
     </div>
   )
