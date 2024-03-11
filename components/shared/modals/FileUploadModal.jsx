@@ -23,7 +23,7 @@ const FileUploadModal = () => {
       </DialogTrigger>
 
       <DialogContent className="w-11/12">
-        <span className="text-center font-bold">Upload Media</span>
+        <span className="text-center font-bold">Add an attachment</span>
 
         <div className="flex flex-col justify-center gap-4">
           {file && (
