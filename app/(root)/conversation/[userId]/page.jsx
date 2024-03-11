@@ -1,5 +1,5 @@
 "use client"
-import ConversationInput from "@/components/shared/conversation/ConversationInput"
+import ConversationInput from "@/components/shared/inputs/ConversationInput"
 import SpinnerText from "@/components/shared/loading/SpinnerText"
 import { useSocket, useUI } from "@/state/store"
 import { useParams } from "next/navigation"
@@ -30,7 +30,7 @@ const ConversationPage = () => {
 
   return (
     <>
-      <div className="grow">Messages</div>
+      <div className="grow"></div>
 
       <ConversationInput />
     </>
