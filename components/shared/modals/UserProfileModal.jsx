@@ -121,6 +121,7 @@ const UserProfileModal = () => {
           <FileUploadButton
             file={avatar}
             setFile={setAvatar}
+            onlyImage={true}
             disabled={isUserUpdatePending || isAvatarDeletePending}
           />
 

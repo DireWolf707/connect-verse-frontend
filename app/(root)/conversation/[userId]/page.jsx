@@ -1,4 +1,5 @@
 "use client"
+import ConversationInput from "@/components/shared/conversation/ConversationInput"
 import SpinnerText from "@/components/shared/loading/SpinnerText"
 import { useSocket, useUI } from "@/state/store"
 import { useParams } from "next/navigation"
@@ -26,6 +27,14 @@ const ConversationPage = () => {
   }, [])
 
   if (!messages) return <SpinnerText text="Loading messages" />
+
+  return (
+    <>
+      <div className="grow">Messages</div>
+
+      <ConversationInput />
+    </>
+  )
 }
 
 export default ConversationPage

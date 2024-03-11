@@ -1,30 +1,50 @@
 "use client"
 import { useDropzone } from "react-dropzone"
 
-const FileUploadButton = ({ file: oldFile, setFile, disabled }) => {
-  const { getRootProps, getInputProps } = useDropzone({
-    maxFiles: 1,
-    accept: {
+const dropzoneConfig = ({ onlyImage, onDrop }) => {
+  let accept
+  if (onlyImage)
+    accept = {
       "image/*": [],
-    },
-    onDrop: (files) => {
-      const newFile = files[0]
-      if (!newFile) return
+    }
+  else accept = {}
 
-      if (oldFile) URL.revokeObjectURL(oldFile.preview)
+  return {
+    maxFiles: 1,
+    accept,
+    onDrop,
+  }
+}
+
+const FileUploadButton = ({
+  file: oldFile,
+  setFile,
+  disabled,
+  onlyImage = false,
+}) => {
+  const onDrop = (files) => {
+    const newFile = files[0]
+    if (!newFile) return
+
+    if (oldFile) URL.revokeObjectURL(oldFile.preview)
+    if (newFile.type.startsWith("image/"))
       newFile.preview = URL.createObjectURL(newFile)
-      setFile(newFile)
-    },
-  })
+    else newFile.preview = "/icons/file.svg"
+    setFile(newFile)
+  }
+
+  const { getRootProps, getInputProps } = useDropzone(
+    dropzoneConfig({ onlyImage, onDrop })
+  )
 
   return (
     <div
       {...getRootProps()}
-      className="cursor-pointer rounded-xl border-2 border-dashed border-black bg-black/10 p-2 text-center text-sm dark:border-white dark:bg-white/10"
+      className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-black bg-black/10 p-2 text-center text-sm dark:border-white dark:bg-white/10"
     >
       <input {...getInputProps()} disabled={disabled} />
-      <p>Drag & drop some file here, or</p>
-      <p>click to select file</p>
+      <span>Drag & drop some file here, or</span>
+      <span>click to select file</span>
     </div>
   )
 }
