@@ -21,7 +21,7 @@ const RenderMessage = ({ message, name }) => {
 const RenderMedia = ({ message }) => "MEDIA"
 
 const ConversationCard = ({ user, message }) => (
-  <div className="flex grow gap-3">
+  <div className="flex gap-3">
     <UserAvatar src={user.avatar} username={user.username} />
 
     <div className="flex grow flex-col">
@@ -35,7 +35,7 @@ const ConversationCard = ({ user, message }) => (
         <RenderMedia message={message} />
       )}
 
-      <span className="text-main self-end">
+      <span className="self-end text-[9.5px] font-[16px]">
         {formatDate(message.createdAt)}
       </span>
     </div>

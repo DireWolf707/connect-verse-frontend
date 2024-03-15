@@ -44,7 +44,7 @@ const ConversationSidebar = () => {
 
       <Separator className="my-1 bg-slate-600 dark:bg-slate-300" />
 
-      <div className="grow py-3">
+      <div className="flex grow flex-col gap-3 py-3">
         {conversations ? (
           conversations.map((conversation) => (
             <ConversationCard
