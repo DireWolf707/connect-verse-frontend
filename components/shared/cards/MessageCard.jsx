@@ -1,32 +1,63 @@
-import { formatDateWithTime } from "@/lib/utils"
+import { cn, formatDateWithTime } from "@/lib/utils"
+import { useUser } from "@/state/apis/userApi"
 import UserAvatar from "../user/UserAvatar"
 
 const RenderMessage = ({ message }) => (
-  <p className="text-main break-all">{message.content}</p>
+  <p className="text-main break-all text-[14px]">{message.content}</p>
 )
 
 const RenderMedia = ({ message }) => "MEDIA"
 
 const MessageCard = ({ user, message }) => {
+  const { data: me } = useUser()
+  const isMe = me.id == user.id
+
   return (
-    <div className="flex gap-3">
-      <UserAvatar src={user.avatar} username={user.username} />
+    <div
+      className={cn(
+        "flex flex-col gap-1 self-start rounded-lg bg-black/10 px-2 py-1.5 dark:bg-white/10 min-w-[260px] max-w-[320px]",
+        {
+          "self-end": isMe,
+        }
+      )}
+    >
+      <div
+        className={cn("flex gap-3", {
+          "flex-row-reverse": isMe,
+        })}
+      >
+        <UserAvatar src={user.avatar} username={user.username} />
 
-      <div className="flex grow flex-col">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-sm font-bold">{user.username}</span>
+        <div className="flex grow flex-col">
+          <div
+            className={cn("flex items-center justify-between", {
+              "self-end": isMe,
+            })}
+          >
+            <span className="text-xs font-bold">{user.username}</span>
+          </div>
 
-          <span className="text-main">
-            {formatDateWithTime(message.createdAt)}
-          </span>
+          <div
+            className={cn({
+              "self-end": isMe,
+            })}
+          >
+            {message.type === "text" ? (
+              <RenderMessage message={message} />
+            ) : (
+              <RenderMedia message={message} />
+            )}
+          </div>
         </div>
-
-        {message.type === "text" ? (
-          <RenderMessage message={message} />
-        ) : (
-          <RenderMedia message={message} />
-        )}
       </div>
+
+      <span
+        className={cn("text-[10px] font-[600] self-end", {
+          "self-start": isMe,
+        })}
+      >
+        {formatDateWithTime(message.createdAt)}
+      </span>
     </div>
   )
 }

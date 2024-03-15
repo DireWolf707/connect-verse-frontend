@@ -35,16 +35,18 @@ const ConversationSidebar = () => {
   }, [])
 
   return (
-    <div className="flex grow flex-col rounded-tl-xl bg-black/15 p-2 dark:bg-white/15">
-      <div className="flex items-center justify-between p-1">
-        <span className="text-main">MESSAGES</span>
+    <div className="flex grow flex-col rounded-tl-xl bg-black/15 dark:bg-white/15">
+      <div className="flex flex-col p-4">
+        <div className="flex justify-between">
+          <span className="text-main">MESSAGES</span>
 
-        <UserSearchModal />
+          <UserSearchModal />
+        </div>
+
+        <Separator className="bg-slate-600 dark:bg-slate-300" />
       </div>
 
-      <Separator className="my-1 bg-slate-600 dark:bg-slate-300" />
-
-      <div className="flex grow flex-col gap-3 py-3">
+      <div className="flex grow flex-col gap-0.5 pb-1">
         {conversations ? (
           conversations.map((conversation) => (
             <ConversationCard

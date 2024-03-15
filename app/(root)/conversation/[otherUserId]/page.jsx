@@ -17,6 +17,7 @@ const ConversationPage = () => {
   const bottomRef = useRef(null)
 
   useEffect(() => {
+    let conversationId
     const onNewMsg = (newMsg) => setMessages((pv) => [...pv, newMsg])
 
     socket
@@ -26,13 +27,13 @@ const ConversationPage = () => {
         setMessages(messages)
         setConversation(conversation)
 
+        conversationId = conversation.id
         socket.on(key("new_msg", conversation.id), onNewMsg)
       })
 
     return () => {
       resetOtherUser()
 
-      const conversationId = conversation.id
       socket.emit("unsub_conv_msgs", { conversationId })
       socket.off(key("new_msg", conversationId), onNewMsg)
     }
