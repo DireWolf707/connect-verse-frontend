@@ -1,5 +1,5 @@
 "use client"
-import ConversationCard from "@/components/shared/cards/ConversationCard"
+import MessageCard from "@/components/shared/cards/MessageCard"
 import ConversationInput from "@/components/shared/inputs/ConversationInput"
 import SpinnerText from "@/components/shared/loading/SpinnerText"
 import { key } from "@/lib/utils"
@@ -13,7 +13,7 @@ const ConversationPage = () => {
   const setOtherUser = useUI((state) => state.setOtherUser)
   const resetOtherUser = useUI((state) => state.resetOtherUser)
   const [messages, setMessages] = useState(null)
-  const [conversationId, setConversationId] = useState(null)
+  const [conversation, setConversation] = useState(null)
   const bottomRef = useRef(null)
 
   useEffect(() => {
@@ -21,17 +21,20 @@ const ConversationPage = () => {
 
     socket
       .emitWithAck("sub_conv_msgs", { otherUserId })
-      .then(({ otherUser, messages, conversationId }) => {
+      .then(({ otherUser, messages, conversation }) => {
         setOtherUser(otherUser)
         setMessages(messages)
-        setConversationId(conversationId)
-        socket.on(key("new_msg", conversationId), onNewMsg)
+        setConversation(conversation)
+
+        socket.on(key("new_msg", conversation.id), onNewMsg)
       })
 
     return () => {
       resetOtherUser()
-      if (conversationId) socket.off(key("new_msg", conversationId))
-      // TODO: unsub
+
+      const conversationId = conversation.id
+      socket.emit("unsub_conv_msgs", { conversationId })
+      socket.off(key("new_msg", conversationId), onNewMsg)
     }
   }, [])
 
@@ -45,7 +48,7 @@ const ConversationPage = () => {
     <>
       <div className="flex grow flex-col gap-3 overflow-auto p-3">
         {messages.map(({ message, user }) => (
-          <ConversationCard key={message.id} message={message} user={user} />
+          <MessageCard key={message.id} message={message} user={user} />
         ))}
 
         <div ref={bottomRef} />

@@ -1,34 +1,45 @@
-import { formatDateWithTime } from "@/lib/utils"
+import { formatDate } from "@/lib/utils"
+import { useUser } from "@/state/apis/userApi"
 import UserAvatar from "../user/UserAvatar"
 
-const RenderMessage = ({ message }) => (
-  <p className="text-main break-all">{message.content}</p>
-)
+const RenderMessage = ({ message, name }) => {
+  const { data: user } = useUser()
 
-const RenderMedia = ({ message }) => "MEDIA"
-
-const ConversationCard = ({ user, message }) => {
   return (
-    <div className="flex gap-3">
-      <UserAvatar src={user.avatar} username={user.username} />
+    <div className="flex gap-1.5">
+      {user.id === message.userId ? (
+        <span className="text-main">Me:</span>
+      ) : (
+        <span className="text-main">{name}:</span>
+      )}
 
-      <div className="flex grow flex-col">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-sm font-bold">{user.username}</span>
-
-          <span className="text-main">
-            {formatDateWithTime(message.createdAt)}
-          </span>
-        </div>
-
-        {message.type === "text" ? (
-          <RenderMessage message={message} />
-        ) : (
-          <RenderMedia message={message} />
-        )}
-      </div>
+      <p className="text-main break-all">{message.content}</p>
     </div>
   )
 }
+
+const RenderMedia = ({ message }) => "MEDIA"
+
+const ConversationCard = ({ user, message }) => (
+  <div className="flex grow gap-3">
+    <UserAvatar src={user.avatar} username={user.username} />
+
+    <div className="flex grow flex-col">
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm font-bold">{user.username}</span>
+      </div>
+
+      {message.type === "text" ? (
+        <RenderMessage message={message} name={user.name} />
+      ) : (
+        <RenderMedia message={message} />
+      )}
+
+      <span className="text-main self-end">
+        {formatDate(message.createdAt)}
+      </span>
+    </div>
+  </div>
+)
 
 export default ConversationCard
