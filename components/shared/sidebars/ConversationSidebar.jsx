@@ -36,7 +36,7 @@ const ConversationSidebar = () => {
 
   return (
     <div className="flex grow flex-col rounded-tl-xl bg-black/15 dark:bg-white/15">
-      <div className="flex flex-col p-4">
+      <div className="flex flex-col gap-1 p-4">
         <div className="flex justify-between">
           <span className="text-main">MESSAGES</span>
 
