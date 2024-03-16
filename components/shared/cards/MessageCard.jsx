@@ -23,10 +23,12 @@ const MessageCard = ({ user, message }) => {
     >
       <div
         className={cn("flex gap-3", {
-          "flex-row-reverse": isMe,
+          "flex-row-reverse relative": isMe,
         })}
       >
-        <UserAvatar src={user.avatar} username={user.username} />
+        <div className="sticky top-0 self-start">
+          <UserAvatar src={user.avatar} username={user.username} />
+        </div>
 
         <div className="flex grow flex-col">
           <div
