@@ -3,6 +3,7 @@ import MessageCard from "@/components/shared/cards/MessageCard"
 import ConversationInput from "@/components/shared/inputs/ConversationInput"
 import SpinnerText from "@/components/shared/loading/SpinnerText"
 import { key } from "@/lib/utils"
+import { useGetMessages } from "@/state/apis/conversationApi"
 import { useSocket, useUI } from "@/state/store"
 import { useParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
@@ -16,28 +17,27 @@ const ConversationPage = () => {
   const [conversation, setConversation] = useState(null)
   const bottomRef = useRef(null)
 
+  const { data } = useGetMessages({ otherUserId })
+
   useEffect(() => {
-    let conversationId
+    if (!data) return
+
     const onNewMsg = (newMsg) => setMessages((pv) => [...pv, newMsg])
 
-    socket
-      .emitWithAck("sub_conv_msgs", { otherUserId })
-      .then(({ otherUser, messages, conversation }) => {
-        setOtherUser(otherUser)
-        setMessages(messages)
-        setConversation(conversation)
+    const { otherUser, messages, conversation } = data
+    setOtherUser(otherUser)
+    setMessages(messages)
+    setConversation(conversation)
 
-        conversationId = conversation.id
-        socket.on(key("new_msg", conversation.id), onNewMsg)
-      })
+    socket.on(key("new_msg", conversation.id), onNewMsg)
 
     return () => {
       resetOtherUser()
 
-      socket.emit("unsub_conv_msgs", { conversationId })
-      socket.off(key("new_msg", conversationId), onNewMsg)
+      socket.emit("unsub_conv_msgs", { conversationId: conversation.id })
+      socket.off(key("new_msg", conversation.id), onNewMsg)
     }
-  }, [])
+  }, [data])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView()

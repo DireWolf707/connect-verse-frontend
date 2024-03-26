@@ -1,6 +1,7 @@
 "use client"
 import { Separator } from "@/components/ui/separator"
 import { key } from "@/lib/utils"
+import { useGetConversations } from "@/state/apis/conversationApi"
 import { useUser } from "@/state/apis/userApi"
 import { useSocket } from "@/state/store"
 import { useEffect, useState } from "react"
@@ -11,9 +12,13 @@ import UserSearchModal from "../modals/UserSearchModal"
 const ConversationSidebar = () => {
   const socket = useSocket((state) => state.socket)
   const [conversations, setConversations] = useState(null)
+
   const { data: user } = useUser()
+  const { data: _conversations } = useGetConversations()
 
   useEffect(() => {
+    if (!_conversations) return
+
     const onNewMsg = (newMsg) =>
       setConversations((pv) => {
         const filteredConversations = pv.filter(
@@ -22,17 +27,15 @@ const ConversationSidebar = () => {
         return [newMsg, ...filteredConversations]
       })
 
-    socket.emitWithAck("sub_user_convs").then((conversations) => {
-      setConversations(conversations)
+    setConversations(_conversations)
 
-      socket.on(key("new_msg", user.id), onNewMsg)
-    })
+    socket.on(key("new_msg", user.id), onNewMsg)
 
     return () => {
       socket.emit("unsub_user_convs")
       socket.off(key("new_msg", user.id), onNewMsg)
     }
-  }, [])
+  }, [_conversations])
 
   return (
     <div className="flex grow flex-col rounded-tl-xl bg-black/15 dark:bg-white/15">

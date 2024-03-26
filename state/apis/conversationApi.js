@@ -1,8 +1,25 @@
-import { useGeneralMutation } from "./generalApi"
+import { useGeneralMutation, useGeneralQuery } from "./generalApi"
 
-export const useUploadAttachment = ({ setProgress }) =>
+export const useGetConversations = () =>
+  useGeneralQuery({
+    url: "/conversation/me",
+    queryKey: ["conversations"],
+  })
+
+export const useGetMessages = ({ otherUserId }) =>
+  useGeneralQuery({
+    url: "/conversation/" + otherUserId,
+    queryKey: ["conversation", otherUserId],
+  })
+
+export const useCreateMessage = ({ otherUserId }) =>
   useGeneralMutation({
-    url: "/conversation/upload-attachment",
+    url: "/conversation/" + otherUserId,
+  })
+
+export const useUploadAttachment = ({ otherUserId, setProgress }) =>
+  useGeneralMutation({
+    url: "/conversation/" + otherUserId + "/upload-attachment",
     setProgress,
     loadingMsg: "Uploading attachment",
     successMsg: "Attachment uploaded",

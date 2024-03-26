@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useSocket } from "@/state/store"
+import { useCreateMessage } from "@/state/apis/conversationApi"
 import { SendHorizonalIcon } from "lucide-react"
 import { useState } from "react"
 import EmojiPickerButton from "../buttons/EmojiPickerButton"
@@ -8,11 +8,12 @@ import AttachmentUploadModal from "../modals/AttachmentUploadModal"
 
 const ConversationInput = ({ otherUserId }) => {
   const [message, setMessage] = useState("")
-  const socket = useSocket((state) => state.socket)
+
+  const { mutateAsync: createMessage } = useCreateMessage({ otherUserId })
 
   const handleSendMessage = (e) => {
     e.preventDefault()
-    socket.emit("create_conv_msg", { otherUserId, content: message })
+    createMessage({ content: message })
     setMessage("")
   }
 
