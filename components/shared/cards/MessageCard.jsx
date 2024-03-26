@@ -13,16 +13,16 @@ const RenderMessage = ({ message }) => {
       <a
         href={message.media}
         target="_blank"
-        className="relative block h-[200px]"
+        className="relative block h-[150px] w-[220px] md:h-[240px] md:w-[320px]"
       >
         {loading && <ImageIcon className="absolute size-full stroke-1" />}
+
         <Image
           src={message.media}
           alt="media"
           height={200}
           width={320}
           className="size-full object-cover"
-          loading="lazy"
           onLoad={() => setLoading(false)}
         />
       </a>
@@ -33,7 +33,7 @@ const RenderMessage = ({ message }) => {
       <video
         src={message.media}
         alt="media"
-        className="h-[200px] object-cover"
+        className="h-[150px] w-[220px] object-cover md:h-[240px] md:w-[320px]"
         controls
       />
     )
@@ -41,14 +41,19 @@ const RenderMessage = ({ message }) => {
   if (message.type === "file")
     return (
       <a href={message.media} target="_blank" download>
-        <FileIcon className="size-[80px] fill-white stroke-black" />
+        <FileIcon className="size-[80px] fill-white stroke-black md:size-[140px]" />
+
         <span className="text-main flex justify-center">
           {message.media.split(".").pop().toUpperCase()}
         </span>
       </a>
     )
 
-  return <p className="text-main break-all text-[16px]">{message.content}</p>
+  return (
+    <p className="text-main max-w-[220px] break-all text-[12px] leading-5 md:max-w-[340px] md:text-[14px] lg:max-w-[540px]">
+      {message.content}
+    </p>
+  )
 }
 
 const MessageCard = ({ user, message }) => {
@@ -66,20 +71,14 @@ const MessageCard = ({ user, message }) => {
       </div>
 
       <div className="flex flex-col gap-1">
-        <div
-          className={cn("flex items-center justify-between", {
-            "self-end": isMe,
-          })}
-        >
-          <span className="text-xs font-bold">{user.username}</span>
-        </div>
+        <span className={cn("text-xs font-bold", { "self-end": isMe })}>
+          {user.username}
+        </span>
 
         <div
           className={cn(
-            "max-w-[320px] flex-col rounded-lg bg-black/10 p-2 dark:bg-white/10 self-start",
-            {
-              "self-end": isMe,
-            }
+            "rounded-lg bg-black/10 p-1.5 dark:bg-white/10 self-start",
+            { "self-end": isMe }
           )}
         >
           <RenderMessage message={message} />
