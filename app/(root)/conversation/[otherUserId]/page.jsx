@@ -14,7 +14,6 @@ const ConversationPage = () => {
   const setOtherUser = useUI((state) => state.setOtherUser)
   const resetOtherUser = useUI((state) => state.resetOtherUser)
   const [messages, setMessages] = useState(null)
-  const [conversation, setConversation] = useState(null)
   const bottomRef = useRef(null)
 
   const { data } = useGetMessages({ otherUserId })
@@ -24,18 +23,17 @@ const ConversationPage = () => {
 
     const onNewMsg = (newMsg) => setMessages((pv) => [...pv, newMsg])
 
-    const { otherUser, messages, conversation } = data
+    const { otherUser, messages, conversationId } = data
     setOtherUser(otherUser)
     setMessages(messages)
-    setConversation(conversation)
 
-    socket.on(key("new_msg", conversation.id), onNewMsg)
+    socket.on(key("new_msg", conversationId), onNewMsg)
 
     return () => {
       resetOtherUser()
 
-      socket.emit("unsub_conv_msgs", { conversationId: conversation.id })
-      socket.off(key("new_msg", conversation.id), onNewMsg)
+      socket.emit("unsub_conv_msgs", { conversationId })
+      socket.off(key("new_msg", conversationId), onNewMsg)
     }
   }, [data])
 

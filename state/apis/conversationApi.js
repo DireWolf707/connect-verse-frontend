@@ -24,3 +24,17 @@ export const useUploadAttachment = ({ otherUserId, setProgress }) =>
     loadingMsg: "Uploading attachment",
     successMsg: "Attachment uploaded",
   })
+
+export const useBlock = ({ otherUserId }) =>
+  useGeneralMutation({
+    url: "/conversation/" + otherUserId + "/block",
+    loadingMsg: "Blocking user",
+    successMsg: "User blocked",
+  })
+
+export const useUnblock = ({ otherUserId }) =>
+  useGeneralMutation({
+    url: "/conversation/" + otherUserId + "/unblock",
+    loadingMsg: "Unblocking user",
+    successMsg: "User unblocked",
+  })

@@ -14,6 +14,7 @@ const AttachmentUploadModal = ({ otherUserId }) => {
   const [progress, setProgress] = useState(null)
 
   const { handler: uploadAttachment, isPending } = useUploadAttachment({
+    otherUserId,
     setProgress,
   })
 
@@ -31,7 +32,6 @@ const AttachmentUploadModal = ({ otherUserId }) => {
 
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("otherUserId", otherUserId)
     uploadAttachment(formData).finally(resetModal)
   }
 

@@ -1,27 +1,33 @@
 import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { formatDate } from "@/lib/utils"
+import { useBlock, useUnblock } from "@/state/apis/conversationApi"
 import { UserRoundCheckIcon, UserRoundXIcon } from "lucide-react"
 import { useState } from "react"
 import UserAvatar from "../user/UserAvatar"
 
-const BlockButton = ({ text, Icon }) => (
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="destructive" size="link">
-          <Icon className="size-8 p-1" />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent side="bottom">{text}</TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-)
+const BlockButton = ({ otherUserId, setIsBlocked }) => {
+  const { handler: block } = useBlock({ otherUserId })
+
+  const blockHandler = () => block().then(() => setIsBlocked(true))
+
+  return (
+    <Button onClick={blockHandler} variant="destructive" size="link">
+      <UserRoundXIcon className="size-8 p-1" />
+    </Button>
+  )
+}
+
+const UnblockButton = ({ otherUserId, setIsBlocked }) => {
+  const { handler: unblock } = useUnblock({ otherUserId })
+
+  const unblockHandler = () => unblock().then(() => setIsBlocked(false))
+
+  return (
+    <Button onClick={unblockHandler} size="link">
+      <UserRoundCheckIcon className="size-8 p-1" />
+    </Button>
+  )
+}
 
 const UserCard = ({ user, showJoined = true, showBlock = false }) => {
   const [isBlocked, setIsBlocked] = useState(user.isBlocked)
@@ -44,9 +50,9 @@ const UserCard = ({ user, showJoined = true, showBlock = false }) => {
 
       {showBlock ? (
         isBlocked ? (
-          <BlockButton Icon={UserRoundCheckIcon} text="Unblock user" />
+          <UnblockButton otherUserId={user.id} setIsBlocked={setIsBlocked} />
         ) : (
-          <BlockButton Icon={UserRoundXIcon} text="Block user" />
+          <BlockButton otherUserId={user.id} setIsBlocked={setIsBlocked} />
         )
       ) : (
         <></>
