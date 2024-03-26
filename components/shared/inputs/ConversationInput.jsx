@@ -4,7 +4,7 @@ import { useSocket } from "@/state/store"
 import { SendHorizonalIcon } from "lucide-react"
 import { useState } from "react"
 import EmojiPickerButton from "../buttons/EmojiPickerButton"
-import FileUploadModal from "../modals/FileUploadModal"
+import AttachmentUploadModal from "../modals/AttachmentUploadModal"
 
 const ConversationInput = ({ otherUserId }) => {
   const [message, setMessage] = useState("")
@@ -22,7 +22,7 @@ const ConversationInput = ({ otherUserId }) => {
       className="mx-4 mb-3 mt-1.5 flex items-center gap-2 rounded-lg bg-black/10 px-3 dark:bg-white/20"
     >
       <div className="flex grow items-center">
-        <FileUploadModal />
+        <AttachmentUploadModal />
         <Input
           required
           value={message}

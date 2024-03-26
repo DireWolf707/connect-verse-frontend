@@ -10,15 +10,29 @@ export const useGeneralQuery = ({ queryKey, url }) =>
   })
 
 export const useGeneralMutation = ({
+  // axios params
   url,
+  // axios "optional" params
   method = "post",
-  onSuccess,
-  onError,
+  setProgress = null,
+  // request handler params
   successMsg,
   loadingMsg,
+  // request handler "optional" params
+  onSuccess,
+  onError,
 }) => {
   const mutation = useMutation({
-    mutationFn: (data) => Q({ url, method, data }).then((res) => res.data),
+    mutationFn: (data) =>
+      Q({
+        url,
+        method,
+        data,
+        ...(setProgress && {
+          onUploadProgress: ({ progress }) =>
+            setProgress(Math.floor(progress * 100)),
+        }),
+      }).then((res) => res.data),
   })
 
   const handler = useCallback(
