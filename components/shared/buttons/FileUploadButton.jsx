@@ -9,9 +9,10 @@ const FileUploadButton = ({ file, setFile, disabled, onlyImage = false }) => {
     if (!newFile) return
 
     if (file) URL.revokeObjectURL(file.preview)
-    console.log(newFile)
+
     if (getContentType(newFile) === "file") newFile.preview = "/icons/file.svg"
     else newFile.preview = URL.createObjectURL(newFile)
+
     setFile(newFile)
   }, [])
 

@@ -32,7 +32,7 @@ const AttachmentUploadModal = ({ otherUserId }) => {
 
     const formData = new FormData()
     formData.append("file", file)
-    uploadAttachment(formData).finally(resetModal)
+    uploadAttachment(formData).then(resetModal).catch(resetModal)
   }
 
   return (
