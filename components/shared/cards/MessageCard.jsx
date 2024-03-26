@@ -1,12 +1,37 @@
 import { cn, formatDateWithTime } from "@/lib/utils"
 import { useUser } from "@/state/apis/userApi"
+import { FileIcon } from "lucide-react"
+import Image from "next/image"
 import UserAvatar from "../user/UserAvatar"
 
 const RenderMessage = ({ message }) => (
-  <p className="text-main break-all text-[14px]">{message.content}</p>
+  <p className="text-main break-all text-[16px]">{message.content}</p>
 )
 
-const RenderMedia = ({ message }) => "MEDIA"
+const RenderMedia = ({ message }) => {
+  if (message.type === "image")
+    return (
+      <Image
+        src={message.media}
+        alt="media"
+        height={300}
+        width={320}
+        className="max-h-[300px] w-auto object-contain"
+      />
+    )
+
+  if (message.type === "video")
+    return <video src={message.media} alt="media" controls />
+
+  return (
+    <a href={message.media} target="_blank" download>
+      <FileIcon className="size-[80px] fill-white stroke-black" />
+      <span className="text-main flex justify-center">
+        {message.media.split(".").pop().toUpperCase()}
+      </span>
+    </a>
+  )
+}
 
 const MessageCard = ({ user, message }) => {
   const { data: me } = useUser()
@@ -33,7 +58,7 @@ const MessageCard = ({ user, message }) => {
 
         <div
           className={cn(
-            "max-w-[300px] flex-col rounded-lg bg-black/10 p-2 dark:bg-white/10 self-start",
+            "max-w-[320px] flex-col rounded-lg bg-black/10 p-2 dark:bg-white/10 self-start",
             {
               "self-end": isMe,
             }

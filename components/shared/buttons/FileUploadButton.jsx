@@ -1,41 +1,25 @@
 "use client"
+import { getContentType } from "@/lib/utils"
+import { useCallback } from "react"
 import { useDropzone } from "react-dropzone"
 
-const dropzoneConfig = ({ onlyImage, onDrop }) => {
-  let accept
-  if (onlyImage)
-    accept = {
-      "image/*": [],
-    }
-  else accept = {}
-
-  return {
-    maxFiles: 1,
-    accept,
-    onDrop,
-  }
-}
-
-const FileUploadButton = ({
-  file: oldFile,
-  setFile,
-  disabled,
-  onlyImage = false,
-}) => {
-  const onDrop = (files) => {
+const FileUploadButton = ({ file, setFile, disabled, onlyImage = false }) => {
+  const onDrop = useCallback((files) => {
     const newFile = files[0]
     if (!newFile) return
 
-    if (oldFile) URL.revokeObjectURL(oldFile.preview)
-    if (newFile.type.startsWith("image/"))
-      newFile.preview = URL.createObjectURL(newFile)
-    else newFile.preview = "/icons/file.svg"
+    if (file) URL.revokeObjectURL(file.preview)
+    console.log(newFile)
+    if (getContentType(newFile) === "file") newFile.preview = "/icons/file.svg"
+    else newFile.preview = URL.createObjectURL(newFile)
     setFile(newFile)
-  }
+  }, [])
 
-  const { getRootProps, getInputProps } = useDropzone(
-    dropzoneConfig({ onlyImage, onDrop })
-  )
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+    ...(onlyImage && { accept: { "image/*": [] } }),
+  })
 
   return (
     <div

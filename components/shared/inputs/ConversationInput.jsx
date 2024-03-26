@@ -22,7 +22,7 @@ const ConversationInput = ({ otherUserId }) => {
       className="mx-4 mb-3 mt-1.5 flex items-center gap-2 rounded-lg bg-black/10 px-3 dark:bg-white/20"
     >
       <div className="flex grow items-center">
-        <AttachmentUploadModal />
+        <AttachmentUploadModal otherUserId={otherUserId} />
         <Input
           required
           value={message}

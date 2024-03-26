@@ -1,5 +1,6 @@
 import { formatDate } from "@/lib/utils"
 import { useUser } from "@/state/apis/userApi"
+import { FileIcon, FileImageIcon, FileVideoIcon } from "lucide-react"
 import Link from "next/link"
 import UserAvatar from "../user/UserAvatar"
 
@@ -7,19 +8,25 @@ const RenderMessage = ({ message, name }) => {
   const { data: user } = useUser()
 
   return (
-    <div className="flex gap-1.5">
+    <div className="flex items-center gap-1.5">
       {user.id === message.userId ? (
         <span className="text-main">Me:</span>
       ) : (
         <span className="text-main">{name}:</span>
       )}
 
-      <p className="text-main line-clamp-1 break-all">{message.content}</p>
+      {message.type === "image" ? (
+        <FileImageIcon className="size-[20px] fill-white stroke-black" />
+      ) : message.type === "video" ? (
+        <FileVideoIcon className="size-[20px] fill-white stroke-black" />
+      ) : message.type === "file" ? (
+        <FileIcon className="size-[20px] fill-white stroke-black" />
+      ) : (
+        <p className="text-main line-clamp-1 break-all">{message.content}</p>
+      )}
     </div>
   )
 }
-
-const RenderMedia = ({ message }) => "MEDIA"
 
 const ConversationCard = ({ user, message }) => (
   <Link
@@ -33,11 +40,7 @@ const ConversationCard = ({ user, message }) => (
         <span className="text-sm font-bold">{user.username}</span>
       </div>
 
-      {message.type === "text" ? (
-        <RenderMessage message={message} name={user.name} />
-      ) : (
-        <RenderMedia message={message} />
-      )}
+      <RenderMessage message={message} name={user.name} />
 
       <span className="self-end text-[9.5px] font-[600]">
         {formatDate(message.createdAt)}
