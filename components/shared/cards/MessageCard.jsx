@@ -10,7 +10,11 @@ const RenderMessage = ({ message }) => {
 
   if (message.type === "image")
     return (
-      <div className="relative h-[200px]">
+      <a
+        href={message.media}
+        target="_blank"
+        className="relative block h-[200px]"
+      >
         {loading && <ImageIcon className="absolute size-full stroke-1" />}
         <Image
           src={message.media}
@@ -21,7 +25,7 @@ const RenderMessage = ({ message }) => {
           loading="lazy"
           onLoad={() => setLoading(false)}
         />
-      </div>
+      </a>
     )
 
   if (message.type === "video")
