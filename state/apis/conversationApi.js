@@ -38,3 +38,11 @@ export const useUnblock = ({ otherUserId }) =>
     loadingMsg: "Unblocking user",
     successMsg: "User unblocked",
   })
+
+export const useDeleteMessage = ({ otherUserId, messageId }) =>
+  useGeneralMutation({
+    url: "/conversation/" + otherUserId + "/message/" + messageId,
+    method: "delete",
+    loadingMsg: "Deleting message",
+    successMsg: "Message Deleted",
+  })

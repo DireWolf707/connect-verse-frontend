@@ -15,7 +15,9 @@ const RenderMessage = ({ message, name }) => {
         <span className="text-main">{name}:</span>
       )}
 
-      {message.type === "image" ? (
+      {message.isDeleted ? (
+        <span className="text-main italic">Message Deleted</span>
+      ) : message.type === "image" ? (
         <FileImageIcon className="size-[20px] fill-white stroke-black" />
       ) : message.type === "video" ? (
         <FileVideoIcon className="size-[20px] fill-white stroke-black" />

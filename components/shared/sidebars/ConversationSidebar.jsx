@@ -19,21 +19,31 @@ const ConversationSidebar = () => {
   useEffect(() => {
     if (!_conversations) return
 
-    const onNewMsg = (newMsg) =>
+    const onNewMsg = (newConv) =>
       setConversations((pv) => {
         const filteredConversations = pv.filter(
-          (conversation) => conversation.id !== newMsg.id
+          (conversation) => conversation.id !== newConv.id
         )
-        return [newMsg, ...filteredConversations]
+        return [newConv, ...filteredConversations]
       })
+
+    const onDeleteMsg = (deletedConv) =>
+      setConversations((pv) =>
+        pv.map((conversation) => {
+          if (conversation.id === deletedConv.id) return deletedConv
+          return conversation
+        })
+      )
 
     setConversations(_conversations)
 
     socket.on(key("new_msg", user.id), onNewMsg)
+    socket.on(key("delete_msg", user.id), onDeleteMsg)
 
     return () => {
       socket.emit("unsub_user_convs")
       socket.off(key("new_msg", user.id), onNewMsg)
+      socket.off(key("delete_msg", user.id), onDeleteMsg)
     }
   }, [_conversations])
 

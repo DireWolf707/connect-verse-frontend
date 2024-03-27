@@ -1,12 +1,23 @@
+import { Textarea } from "@/components/ui/textarea"
 import { cn, formatDateWithTime } from "@/lib/utils"
-import { useUser } from "@/state/apis/userApi"
-import { FileIcon, ImageIcon } from "lucide-react"
+import { useDeleteMessage } from "@/state/apis/conversationApi"
+import {
+  CheckIcon,
+  FileIcon,
+  ImageIcon,
+  SquarePenIcon,
+  Trash2Icon,
+  XIcon,
+} from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
 import UserAvatar from "../user/UserAvatar"
 
 const RenderMessage = ({ message }) => {
   const [loading, setLoading] = useState(true)
+
+  if (message.isDeleted)
+    return <span className="text-main italic">Message Deleted</span>
 
   if (message.type === "image")
     return (
@@ -56,8 +67,15 @@ const RenderMessage = ({ message }) => {
   )
 }
 
-const MessageCard = ({ user, message }) => {
-  const { data: me } = useUser()
+const MessageCard = ({ user, message, otherUserId, me }) => {
+  const [editMode, setEditMode] = useState(false)
+  const [content, setContent] = useState(message.content)
+
+  const { handler: deleteMsg } = useDeleteMessage({
+    otherUserId,
+    messageId: message.id,
+  })
+
   const isMe = me.id == user.id
 
   return (
@@ -70,27 +88,76 @@ const MessageCard = ({ user, message }) => {
         <UserAvatar src={user.avatar} username={user.username} />
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="group flex flex-col gap-1">
         <span className={cn("text-xs font-bold", { "self-end": isMe })}>
           {user.username}
         </span>
 
         <div
-          className={cn(
-            "rounded-lg bg-black/10 p-1.5 dark:bg-white/10 self-start",
-            { "self-end": isMe }
-          )}
-        >
-          <RenderMessage message={message} />
-        </div>
-
-        <span
-          className={cn("text-[10px] font-[600] self-start", {
-            "self-end": isMe,
+          className={cn("flex items-center gap-2", {
+            "flex-row-reverse": isMe,
           })}
         >
-          {formatDateWithTime(message.createdAt)}
-        </span>
+          <div
+            className={cn("rounded-lg bg-black/10 p-1.5 dark:bg-white/10", {
+              "self-end": isMe,
+            })}
+          >
+            {editMode ? (
+              <Textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className="text-main w-[220px] break-all text-[12px] leading-5 md:w-[340px] md:text-[14px] lg:w-[540px]"
+              />
+            ) : (
+              <RenderMessage message={message} />
+            )}
+          </div>
+
+          {isMe && !message.isDeleted && !editMode && (
+            <>
+              <Trash2Icon
+                onClick={() => deleteMsg()}
+                className="hidden size-7 cursor-pointer rounded-full stroke-red-400 p-1.5 hover:bg-red-500 hover:stroke-white group-hover:block"
+              />
+
+              {message.type === "text" && (
+                <SquarePenIcon
+                  onClick={() => setEditMode(true)}
+                  className="hidden size-7 cursor-pointer rounded-full stroke-violet-400 p-1.5 hover:bg-violet-500 hover:stroke-white group-hover:block"
+                />
+              )}
+            </>
+          )}
+
+          {editMode && (
+            <>
+              <XIcon
+                onClick={() => setEditMode(false)}
+                className="size-7 cursor-pointer rounded-full stroke-red-400 p-1.5 hover:bg-red-500 hover:stroke-white"
+              />
+              <CheckIcon className="size-7 cursor-pointer rounded-full stroke-violet-400 p-1.5 hover:bg-violet-500 hover:stroke-white" />
+            </>
+          )}
+        </div>
+
+        <div
+          className={cn("flex gap-1", {
+            "flex-row-reverse self-end": isMe,
+          })}
+        >
+          <span className="text-main">
+            {formatDateWithTime(message.createdAt)}
+          </span>
+
+          {message.isEdited && (
+            <span className="text-main italic">(edited)</span>
+          )}
+
+          {message.isDeleted && (
+            <span className="text-main italic">(deleted)</span>
+          )}
+        </div>
       </div>
     </div>
   )
