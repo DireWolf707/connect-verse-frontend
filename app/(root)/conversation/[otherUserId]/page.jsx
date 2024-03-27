@@ -5,6 +5,7 @@ import SpinnerText from "@/components/shared/loading/SpinnerText"
 import { key } from "@/lib/utils"
 import { useGetMessages } from "@/state/apis/conversationApi"
 import { useSocket, useUI } from "@/state/store"
+import { useQueryClient } from "@tanstack/react-query"
 import { useParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
@@ -16,6 +17,7 @@ const ConversationPage = () => {
   const [messages, setMessages] = useState(null)
   const bottomRef = useRef(null)
 
+  const queryClient = useQueryClient()
   const { data } = useGetMessages({ otherUserId })
 
   useEffect(() => {
@@ -31,7 +33,7 @@ const ConversationPage = () => {
 
     return () => {
       resetOtherUser()
-
+      queryClient.removeQueries({ queryKey: ["conversation", otherUserId] })
       socket.emit("unsub_conv_msgs", { conversationId })
       socket.off(key("new_msg", conversationId), onNewMsg)
     }

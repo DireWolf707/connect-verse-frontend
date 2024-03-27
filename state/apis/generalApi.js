@@ -10,15 +10,15 @@ export const useGeneralQuery = ({ queryKey, url }) =>
   })
 
 export const useGeneralMutation = ({
-  // axios params
+  // Axios params
   url,
-  // axios "optional" params
+  // Axios "optional" params
   method = "post",
   setProgress = null,
-  // request handler params
+  // Request handler params
   successMsg,
   loadingMsg,
-  // request handler "optional" params
+  // Mutation query "optional" params
   onSuccess,
   onError,
 }) => {
@@ -33,6 +33,8 @@ export const useGeneralMutation = ({
             setProgress(Math.floor(progress * 100)),
         }),
       }).then((res) => res.data),
+    onError,
+    onSuccess,
   })
 
   const handler = useCallback(
@@ -41,8 +43,6 @@ export const useGeneralMutation = ({
         reqPromise: () => mutation.mutateAsync(data),
         loadingMsg,
         successMsg,
-        onSuccess,
-        onError,
       }),
     []
   )
