@@ -8,21 +8,25 @@ import {
 } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 import { MailIcon } from "lucide-react"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 import LogoutButton from "../buttons/LogoutButton"
 import ThemeToggleButton from "../buttons/ThemeToggleButton"
 import UserProfileModal from "../modals/UserProfileModal"
 
-const ServerIcon = ({ text, active, Icon }) => (
+const ServerIcon = ({ Icon, text, active, href }) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
-        <Icon
-          className={cn("size-8 p-1 rounded-lg cursor-pointer", {
-            "bg-violet-600 text-white": active,
-          })}
-        />
+        <Link href={href}>
+          <Icon
+            className={cn("size-8 p-1 rounded-lg", {
+              "bg-violet-600 text-white": active,
+            })}
+          />
+        </Link>
       </TooltipTrigger>
+
       <TooltipContent side="right">{text}</TooltipContent>
     </Tooltip>
   </TooltipProvider>
@@ -35,8 +39,9 @@ const ServerSidebar = () => {
     <div className="flex flex-col items-center justify-between px-1 py-2 pt-1">
       <div className="flex flex-col gap-2 overflow-auto">
         <ServerIcon
-          text="Messages"
           Icon={MailIcon}
+          text="Messages"
+          href="/conversation"
           active={pathname.startsWith("/conversation")}
         />
       </div>

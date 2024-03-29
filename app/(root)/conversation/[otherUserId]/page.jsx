@@ -2,7 +2,6 @@
 import MessageCard from "@/components/shared/cards/MessageCard"
 import ConversationInput from "@/components/shared/inputs/ConversationInput"
 import SpinnerText from "@/components/shared/loading/SpinnerText"
-import { key } from "@/lib/utils"
 import { useGetMessages } from "@/state/apis/conversationApi"
 import { useUser } from "@/state/apis/userApi"
 import { useSocket, useUI } from "@/state/store"
@@ -38,29 +37,18 @@ const ConversationPage = () => {
       setLastMessage(newMsg)
     }
 
-    const onDeleteMsg = (deletedMsg) => {
-      setMessages((pv) =>
-        pv.map((msg) => {
-          if (msg.message.id === deletedMsg.message.id) return deletedMsg
-          return msg
-        })
-      )
-      setLastMessage(deletedMsg)
-    }
-
     const { otherUser, messages, conversationId } = data
     setOtherUser(otherUser)
     setMessages(messages)
 
-    socket.on(key("new_msg", conversationId), onNewMsg)
-    socket.on(key("delete_msg", conversationId), onDeleteMsg)
+    socket.on("new_msg", onNewMsg)
 
     return () => {
       resetOtherUser()
       queryClient.removeQueries({ queryKey: ["conversation", otherUserId] })
-      socket.emit("unsub_conv_msgs", { conversationId })
-      socket.off(key("new_msg", conversationId), onNewMsg)
-      socket.off(key("delete_msg", conversationId), onDeleteMsg)
+
+      socket.emit("unsub_conv", conversationId)
+      socket.off("new_msg", onNewMsg)
     }
   }, [data])
 
@@ -68,10 +56,11 @@ const ConversationPage = () => {
     if (!bottomRef?.current) return
 
     if (
+      // first render
       !lastMsg ||
-      (lastMsg.user.id === me.id &&
-        !lastMsg.message.isEdited &&
-        !lastMsg.message.isDeleted) ||
+      // my new message (setLastMessage only on new message)
+      lastMsg.user.id === me.id ||
+      // user new message (when at bottom)
       (lastMsg.user.id === otherUserId && stickToBottom)
     )
       bottomRef.current.scrollIntoView()
@@ -85,10 +74,10 @@ const ConversationPage = () => {
         {messages.map(({ message, user }) => (
           <MessageCard
             key={message.id}
-            message={message}
+            me={me}
             user={user}
             otherUserId={otherUserId}
-            me={me}
+            message={message}
           />
         ))}
 

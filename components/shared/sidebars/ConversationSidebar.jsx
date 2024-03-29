@@ -1,8 +1,6 @@
 "use client"
 import { Separator } from "@/components/ui/separator"
-import { key } from "@/lib/utils"
 import { useGetConversations } from "@/state/apis/conversationApi"
-import { useUser } from "@/state/apis/userApi"
 import { useSocket } from "@/state/store"
 import { useEffect, useState } from "react"
 import ConversationCard from "../cards/ConversationCard"
@@ -13,13 +11,12 @@ const ConversationSidebar = () => {
   const socket = useSocket((state) => state.socket)
   const [conversations, setConversations] = useState(null)
 
-  const { data: user } = useUser()
   const { data: _conversations } = useGetConversations()
 
   useEffect(() => {
     if (!_conversations) return
 
-    const onNewMsg = (newConv) =>
+    const onNewConv = (newConv) =>
       setConversations((pv) => {
         const filteredConversations = pv.filter(
           (conversation) => conversation.id !== newConv.id
@@ -27,23 +24,13 @@ const ConversationSidebar = () => {
         return [newConv, ...filteredConversations]
       })
 
-    const onDeleteMsg = (deletedConv) =>
-      setConversations((pv) =>
-        pv.map((conversation) => {
-          if (conversation.id === deletedConv.id) return deletedConv
-          return conversation
-        })
-      )
-
     setConversations(_conversations)
 
-    socket.on(key("new_msg", user.id), onNewMsg)
-    socket.on(key("delete_msg", user.id), onDeleteMsg)
+    socket.on("new_conv", onNewConv)
 
     return () => {
       socket.emit("unsub_user_convs")
-      socket.off(key("new_msg", user.id), onNewMsg)
-      socket.off(key("delete_msg", user.id), onDeleteMsg)
+      socket.off("new_conv", onNewConv)
     }
   }, [_conversations])
 
@@ -52,7 +39,6 @@ const ConversationSidebar = () => {
       <div className="flex flex-col gap-1 p-4">
         <div className="flex justify-between">
           <span className="text-main">MESSAGES</span>
-
           <UserSearchModal />
         </div>
 
@@ -63,9 +49,10 @@ const ConversationSidebar = () => {
         {conversations ? (
           conversations.map((conversation) => (
             <ConversationCard
-              key={conversation.id}
+              key={conversation.message.id} // for re-rendering issue
               user={conversation.user}
               message={conversation.message}
+              conversationId={conversation.id}
             />
           ))
         ) : (

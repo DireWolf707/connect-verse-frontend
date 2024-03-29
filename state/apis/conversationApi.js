@@ -46,3 +46,10 @@ export const useDeleteMessage = ({ otherUserId, messageId }) =>
     loadingMsg: "Deleting message",
     successMsg: "Message Deleted",
   })
+
+export const useEditMessage = ({ otherUserId, messageId }) =>
+  useGeneralMutation({
+    url: "/conversation/" + otherUserId + "/message/" + messageId,
+    loadingMsg: "Editing message",
+    successMsg: "Message Edited",
+  })

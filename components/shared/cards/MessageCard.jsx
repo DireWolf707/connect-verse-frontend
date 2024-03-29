@@ -1,6 +1,7 @@
 import { Textarea } from "@/components/ui/textarea"
-import { cn, formatDateWithTime } from "@/lib/utils"
-import { useDeleteMessage } from "@/state/apis/conversationApi"
+import { cn, formatDateWithTime, key } from "@/lib/utils"
+import { useDeleteMessage, useEditMessage } from "@/state/apis/conversationApi"
+import { useSocket } from "@/state/store"
 import {
   CheckIcon,
   FileIcon,
@@ -10,7 +11,7 @@ import {
   XIcon,
 } from "lucide-react"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import UserAvatar from "../user/UserAvatar"
 
 const RenderMessage = ({ message }) => {
@@ -67,8 +68,11 @@ const RenderMessage = ({ message }) => {
   )
 }
 
-const MessageCard = ({ user, message, otherUserId, me }) => {
+const MessageCard = ({ me, user, otherUserId, message: _message }) => {
+  const socket = useSocket((state) => state.socket)
+  const [isMe] = useState(me.id == user.id)
   const [editMode, setEditMode] = useState(false)
+  const [message, setMessage] = useState(_message)
   const [content, setContent] = useState(message.content)
 
   const { handler: deleteMsg } = useDeleteMessage({
@@ -76,7 +80,24 @@ const MessageCard = ({ user, message, otherUserId, me }) => {
     messageId: message.id,
   })
 
-  const isMe = me.id == user.id
+  const { handler: editMsg } = useEditMessage({
+    otherUserId,
+    messageId: message.id,
+  })
+
+  const editModeCloseHandler = () => {
+    setEditMode(false)
+    setContent(message.content)
+  }
+
+  const editMessageHandler = () =>
+    editMsg({ content }).finally(() => setEditMode(false))
+
+  useEffect(() => {
+    socket.on(key("modify_msg", message.id), setMessage)
+
+    return () => socket.off(key("modify_msg", message.id), setMessage)
+  }, [])
 
   return (
     <div
@@ -133,10 +154,13 @@ const MessageCard = ({ user, message, otherUserId, me }) => {
           {editMode && (
             <>
               <XIcon
-                onClick={() => setEditMode(false)}
+                onClick={editModeCloseHandler}
                 className="size-7 cursor-pointer rounded-full stroke-red-400 p-1.5 hover:bg-red-500 hover:stroke-white"
               />
-              <CheckIcon className="size-7 cursor-pointer rounded-full stroke-violet-400 p-1.5 hover:bg-violet-500 hover:stroke-white" />
+              <CheckIcon
+                onClick={editMessageHandler}
+                className="size-7 cursor-pointer rounded-full stroke-violet-400 p-1.5 hover:bg-violet-500 hover:stroke-white"
+              />
             </>
           )}
         </div>

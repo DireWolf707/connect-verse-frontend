@@ -1,7 +1,9 @@
-import { formatDate } from "@/lib/utils"
+import { formatDate, key } from "@/lib/utils"
 import { useUser } from "@/state/apis/userApi"
+import { useSocket } from "@/state/store"
 import { FileIcon, FileImageIcon, FileVideoIcon } from "lucide-react"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 import UserAvatar from "../user/UserAvatar"
 
 const RenderMessage = ({ message, name }) => {
@@ -30,25 +32,36 @@ const RenderMessage = ({ message, name }) => {
   )
 }
 
-const ConversationCard = ({ user, message }) => (
-  <Link
-    className="flex gap-2 p-1.5 hover:bg-black/10 dark:hover:bg-black/30"
-    href={`/conversation/${user.id}`}
-  >
-    <UserAvatar src={user.avatar} username={user.username} />
+const ConversationCard = ({ user, conversationId, message: _message }) => {
+  const socket = useSocket((state) => state.socket)
+  const [message, setMessage] = useState(_message)
 
-    <div className="flex grow flex-col gap-0.5">
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-sm font-bold">{user.username}</span>
+  useEffect(() => {
+    socket.on(key("modify_conv", conversationId), setMessage)
+
+    return () => socket.off(key("modify_conv", conversationId), setMessage)
+  }, [])
+
+  return (
+    <Link
+      className="flex gap-2 p-1.5 hover:bg-black/10 dark:hover:bg-black/30"
+      href={`/conversation/${user.id}`}
+    >
+      <UserAvatar src={user.avatar} username={user.username} />
+
+      <div className="flex grow flex-col gap-0.5">
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-sm font-bold">{user.username}</span>
+        </div>
+
+        <RenderMessage message={message} name={user.name} />
+
+        <span className="self-end text-[9.5px] font-[600]">
+          {formatDate(message.createdAt)}
+        </span>
       </div>
-
-      <RenderMessage message={message} name={user.name} />
-
-      <span className="self-end text-[9.5px] font-[600]">
-        {formatDate(message.createdAt)}
-      </span>
-    </div>
-  </Link>
-)
+    </Link>
+  )
+}
 
 export default ConversationCard
