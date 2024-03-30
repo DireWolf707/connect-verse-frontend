@@ -14,11 +14,13 @@ const RenderMessage = ({ message, name }) => {
       {user.id === message.userId ? (
         <span className="text-main">Me:</span>
       ) : (
-        <span className="text-main">{name}:</span>
+        <span className="text-main text-nowrap">{name}:</span>
       )}
 
       {message.isDeleted ? (
-        <span className="text-main italic">Message Deleted</span>
+        <span className="text-main line-clamp-1 break-all pr-1 italic">
+          Message Deleted
+        </span>
       ) : message.type === "image" ? (
         <FileImageIcon className="size-[20px] fill-white stroke-black" />
       ) : message.type === "video" ? (
