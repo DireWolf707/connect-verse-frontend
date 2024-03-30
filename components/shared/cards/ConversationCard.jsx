@@ -1,6 +1,6 @@
 import { formatDate, key } from "@/lib/utils"
 import { useUser } from "@/state/apis/userApi"
-import { useSocket } from "@/state/store"
+import { useSocket, useUI } from "@/state/store"
 import { FileIcon, FileImageIcon, FileVideoIcon } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -35,6 +35,8 @@ const RenderMessage = ({ message, name }) => {
 const ConversationCard = ({ user, conversationId, message: _message }) => {
   const socket = useSocket((state) => state.socket)
   const [message, setMessage] = useState(_message)
+  const sidebar = useUI((state) => state.sidebar)
+  const setSidebar = useUI((state) => state.setSidebar)
 
   useEffect(() => {
     socket.on(key("modify_conv", conversationId), setMessage)
@@ -46,6 +48,7 @@ const ConversationCard = ({ user, conversationId, message: _message }) => {
     <Link
       className="flex gap-2 p-1.5 hover:bg-black/10 dark:hover:bg-black/30"
       href={`/conversation/${user.id}`}
+      onClick={() => sidebar && setSidebar(false)}
     >
       <UserAvatar src={user.avatar} username={user.username} />
 

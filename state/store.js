@@ -14,4 +14,7 @@ export const useUI = create((set) => ({
   channelName: null,
   setChannelName: (channelName) => set({ channelName }),
   resetChannelName: () => set({ channelName: null }),
+
+  sidebar: false,
+  setSidebar: (open) => set({ sidebar: open }),
 }))
