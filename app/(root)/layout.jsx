@@ -8,9 +8,7 @@ const Layout = ({ children }) => {
   return (
     <ProtectedRoute>
       <SocketProvider>
-        <div className="hidden sm:flex">
-          <Sidebar />
-        </div>
+        <Sidebar />
 
         <div className="flex grow flex-col">
           <Navbar />

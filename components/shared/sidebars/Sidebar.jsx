@@ -1,4 +1,7 @@
+import { cn } from "@/lib/utils"
+import { useUI } from "@/state/store"
 import { usePathname } from "next/navigation"
+import { useMediaQuery } from "react-responsive"
 import Logo from "../navbar/Logo"
 import ChannelSidebar from "./ChannelSidebar"
 import ConversationSidebar from "./ConversationSidebar"
@@ -6,9 +9,18 @@ import ServerSidebar from "./ServerSidebar"
 
 const Sidebar = () => {
   const pathname = usePathname()
+  const sidebarOpen = useUI((state) => state.sidebarOpen)
+  const isMobile = useMediaQuery({
+    maxWidth: "640px",
+  })
 
   return (
-    <div className="flex w-sidebar flex-col bg-black/10 dark:bg-white/10">
+    <div
+      className={cn(
+        "translate-x-[-100%] fixed inset-0 z-10 flex w-screen flex-col bg-white dark:bg-black sm:static sm:w-sidebar sm:translate-x-0 duration-300 sm:duration-0",
+        { "translate-x-0": isMobile && sidebarOpen }
+      )}
+    >
       <Logo />
 
       <div className="flex grow">

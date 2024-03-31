@@ -2,12 +2,14 @@
 import { Separator } from "@/components/ui/separator"
 import { useGetConversations } from "@/state/apis/conversationApi"
 import { useSocket } from "@/state/store"
+import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import ConversationCard from "../cards/ConversationCard"
 import SpinnerText from "../loading/SpinnerText"
 import UserSearchModal from "../modals/UserSearchModal"
 
 const ConversationSidebar = () => {
+  const queryClient = useQueryClient()
   const socket = useSocket((state) => state.socket)
   const [conversations, setConversations] = useState(null)
 
@@ -29,6 +31,7 @@ const ConversationSidebar = () => {
     socket.on("new_conv", onNewConv)
 
     return () => {
+      queryClient.removeQueries({ queryKey: ["conversations"] })
       socket.emit("unsub_user_convs")
       socket.off("new_conv", onNewConv)
     }

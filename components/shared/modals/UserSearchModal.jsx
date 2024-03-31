@@ -1,8 +1,8 @@
 "use client"
 import { CommandDialog, CommandInput } from "@/components/ui/command"
 import { useSearchUser } from "@/state/apis/userApi"
+import { useUI } from "@/state/store"
 import { UserRoundSearchIcon } from "lucide-react"
-
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import UserCard from "../cards/UserCard"
@@ -11,6 +11,7 @@ import SpinnerText from "../loading/SpinnerText"
 const UserSearchModal = () => {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState(null)
+  const closeSidebar = useUI((state) => state.closeSidebar)
   const { data, mutate, isPending, isSuccess, isError, reset } = useSearchUser()
 
   useEffect(() => {
@@ -22,6 +23,7 @@ const UserSearchModal = () => {
 
   const onCloseHandler = () => {
     setOpen(false)
+    closeSidebar()
     reset()
   }
 

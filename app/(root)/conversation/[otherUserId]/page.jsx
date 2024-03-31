@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react"
 import { useInView } from "react-cool-inview"
 
 const ConversationPage = () => {
+  const queryClient = useQueryClient()
   const { otherUserId } = useParams()
   const socket = useSocket((state) => state.socket)
   const setOtherUser = useUI((state) => state.setOtherUser)
@@ -19,13 +20,10 @@ const ConversationPage = () => {
   const [messages, setMessages] = useState(null)
   const [lastMsg, setLastMessage] = useState(null)
   const [stickToBottom, setStickToBottom] = useState(null)
-
   const { observe } = useInView({
     onEnter: () => setStickToBottom(true),
     onLeave: () => setStickToBottom(false),
   })
-
-  const queryClient = useQueryClient()
   const { data } = useGetMessages({ otherUserId })
   const { data: me } = useUser()
 
@@ -46,7 +44,6 @@ const ConversationPage = () => {
     return () => {
       resetOtherUser()
       queryClient.removeQueries({ queryKey: ["conversation", otherUserId] })
-
       socket.emit("unsub_conv", conversationId)
       socket.off("new_msg", onNewMsg)
     }

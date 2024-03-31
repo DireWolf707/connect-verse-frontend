@@ -37,8 +37,8 @@ const RenderMessage = ({ message, name }) => {
 const ConversationCard = ({ user, conversationId, message: _message }) => {
   const socket = useSocket((state) => state.socket)
   const [message, setMessage] = useState(_message)
-  const sidebar = useUI((state) => state.sidebar)
-  const setSidebar = useUI((state) => state.setSidebar)
+  const sidebarOpen = useUI((state) => state.sidebarOpen)
+  const closeSidebar = useUI((state) => state.closeSidebar)
 
   useEffect(() => {
     socket.on(key("modify_conv", conversationId), setMessage)
@@ -50,7 +50,7 @@ const ConversationCard = ({ user, conversationId, message: _message }) => {
     <Link
       className="flex gap-2 p-1.5 hover:bg-black/10 dark:hover:bg-black/30"
       href={`/conversation/${user.id}`}
-      onClick={() => sidebar && setSidebar(false)}
+      onClick={() => sidebarOpen && closeSidebar()}
     >
       <UserAvatar src={user.avatar} username={user.username} />
 
