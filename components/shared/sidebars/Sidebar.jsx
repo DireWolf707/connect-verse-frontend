@@ -17,7 +17,7 @@ const Sidebar = () => {
   return (
     <div
       className={cn(
-        "translate-x-[-100%] fixed inset-0 z-10 flex w-screen flex-col bg-white dark:bg-black sm:static sm:w-sidebar sm:translate-x-0 duration-300 sm:duration-0",
+        "translate-x-[-100%] fixed inset-0 z-10 flex w-screen flex-col bg-[#e6f5f6] dark:bg-[#260732] sm:static sm:w-sidebar sm:translate-x-0 duration-300 sm:duration-0",
         { "translate-x-0": isMobile && sidebarOpen }
       )}
     >

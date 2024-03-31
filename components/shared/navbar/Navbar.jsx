@@ -7,7 +7,7 @@ const Navbar = () => {
   const openSidebar = useUI((state) => state.openSidebar)
 
   return (
-    <div className="flex h-navbar shrink-0 items-center justify-end gap-1 bg-black/10 px-4 dark:bg-white/10">
+    <div className="flex h-navbar shrink-0 items-center justify-end gap-1 bg-[#e6f5f6] px-4 dark:bg-[#260732]">
       <Header />
 
       <MenuIcon onClick={openSidebar} className="cursor-pointer sm:hidden" />

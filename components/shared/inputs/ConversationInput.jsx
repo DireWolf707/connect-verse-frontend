@@ -21,7 +21,7 @@ const ConversationInput = ({ otherUserId }) => {
   return (
     <form
       onSubmit={handleSendMessage}
-      className="mx-4 mb-3 mt-1.5 flex items-center gap-2 rounded-lg bg-black/10 px-3 dark:bg-white/20"
+      className="mx-4 mb-3 mt-1.5 flex items-center gap-2 rounded-lg bg-[#dfe7e8] px-3 dark:bg-[#403544]"
     >
       <div className="flex grow items-center">
         <AttachmentUploadModal otherUserId={otherUserId} />

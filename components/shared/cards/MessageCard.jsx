@@ -120,7 +120,7 @@ const MessageCard = ({ me, user, otherUserId, message: _message }) => {
           })}
         >
           <div
-            className={cn("rounded-lg bg-black/10 p-1.5 dark:bg-white/10", {
+            className={cn("rounded-lg p-1.5 bg-[#e6f5f6] dark:bg-[#260732]", {
               "self-end": isMe,
             })}
           >

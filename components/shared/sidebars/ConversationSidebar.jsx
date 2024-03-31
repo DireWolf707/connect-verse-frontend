@@ -38,14 +38,14 @@ const ConversationSidebar = () => {
   }, [_conversations])
 
   return (
-    <div className="flex grow flex-col rounded-tl-xl bg-black/15 dark:bg-white/15">
+    <div className="flex grow flex-col rounded-tl-xl bg-[#dfe7e8] dark:bg-[#403544]">
       <div className="flex flex-col gap-1 p-4">
         <div className="flex justify-between">
           <span className="text-main">MESSAGES</span>
           <UserSearchModal />
         </div>
 
-        <Separator className="bg-slate-600 dark:bg-slate-300" />
+        <Separator className="bg-black dark:bg-white" />
       </div>
 
       <div className="flex grow flex-col gap-0.5 pb-1">

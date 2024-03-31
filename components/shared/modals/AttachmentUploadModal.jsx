@@ -64,7 +64,7 @@ const AttachmentUploadModal = ({ otherUserId }) => {
 
           {progress ? (
             <div className="relative">
-              <span className="absolute left-[50%] top-[50%] z-10 translate-x-[-50%] translate-y-[-50%]">
+              <span className="absolute left-[50%] top-[50%] z-10 translate-x-[-50%] translate-y-[-50%] text-white">
                 {progress}%
               </span>
               <Progress value={progress} className="h-8 rounded-none" />
