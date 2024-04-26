@@ -28,8 +28,8 @@ import FileUploadButton from "../buttons/FileUploadButton"
 import UserAvatar from "../user/UserAvatar"
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
-  name: z.string().min(2).max(50),
+  username: z.string().min(1).max(32),
+  name: z.string().min(1).max(32),
 })
 
 const UserProfileInput = ({ field }) => (
@@ -85,7 +85,7 @@ const UserProfileModal = () => {
   return (
     <Dialog onOpenChange={modalCloseHandler}>
       <DialogTrigger>
-        <UserAvatar src={user.avatar} username={user.username} />
+        <UserAvatar src={user.avatarURL} username={user.username} />
       </DialogTrigger>
 
       <DialogContent>
@@ -100,12 +100,12 @@ const UserProfileModal = () => {
         <div className="flex flex-col gap-4">
           <div className="relative flex items-center justify-center gap-2 self-center">
             <UserAvatar
-              src={avatar?.preview || user.avatar}
+              src={avatar?.preview || user.avatarURL}
               username={user.username}
               size="size-36"
             />
 
-            {user.avatar && (
+            {user.avatarURL && (
               <Button
                 onClick={avatarDeleteHandler}
                 disabled={isAvatarDeletePending}
