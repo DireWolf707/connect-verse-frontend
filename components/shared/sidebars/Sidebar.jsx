@@ -23,10 +23,10 @@ const Sidebar = () => {
     >
       <Logo />
 
-      <div className="flex grow">
+      <div className="flex grow overflow-auto">
         <ServerSidebar />
         {pathname.startsWith("/conversation") && <ConversationSidebar />}
-        {pathname.startsWith("/server") && <ChannelSidebar />}
+        {pathname.startsWith("/group") && <ChannelSidebar />}
       </div>
     </div>
   )
