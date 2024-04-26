@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { errorHandler } from "@/lib/request_handler"
-import { useCreateMessage } from "@/state/apis/conversationApi"
+import { useCreateMessage } from "@/state/apis/conversation"
 import { SendHorizonalIcon } from "lucide-react"
 import { useState } from "react"
 import EmojiPickerButton from "../buttons/EmojiPickerButton"

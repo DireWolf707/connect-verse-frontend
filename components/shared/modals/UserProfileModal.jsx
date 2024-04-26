@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useDeleteAvatar, useUpdateUser, useUser } from "@/state/apis/userApi"
+import { useDeleteAvatar, useUpdateUser, useUser } from "@/state/apis/user"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2Icon } from "lucide-react"
 import { useState } from "react"

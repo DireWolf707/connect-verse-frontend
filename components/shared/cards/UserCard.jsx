@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { formatDate } from "@/lib/utils"
-import { useBlock, useUnblock } from "@/state/apis/conversationApi"
+import { useBlock, useUnblock } from "@/state/apis/conversation"
 import { UserRoundCheckIcon, UserRoundXIcon } from "lucide-react"
 import { useState } from "react"
 import UserAvatar from "../user/UserAvatar"

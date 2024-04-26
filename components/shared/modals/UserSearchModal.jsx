@@ -1,6 +1,6 @@
 "use client"
 import { CommandDialog, CommandInput } from "@/components/ui/command"
-import { useSearchUser } from "@/state/apis/userApi"
+import { useSearchUser } from "@/state/apis/user"
 import { useUI } from "@/state/store"
 import { UserRoundSearchIcon } from "lucide-react"
 import Link from "next/link"

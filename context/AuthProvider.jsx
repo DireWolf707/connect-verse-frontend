@@ -1,6 +1,6 @@
 "use client"
 import Circles from "@/components/shared/loading/Circles"
-import { useUser } from "@/state/apis/userApi"
+import { useUser } from "@/state/apis/user"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 

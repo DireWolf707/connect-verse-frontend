@@ -1,6 +1,6 @@
 import { Textarea } from "@/components/ui/textarea"
 import { cn, formatDateWithTime, key } from "@/lib/utils"
-import { useDeleteMessage, useEditMessage } from "@/state/apis/conversationApi"
+import { useDeleteMessage, useEditMessage } from "@/state/apis/conversation"
 import { useSocket } from "@/state/store"
 import {
   CheckIcon,

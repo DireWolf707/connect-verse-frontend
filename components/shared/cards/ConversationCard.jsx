@@ -1,5 +1,5 @@
 import { formatDate, key } from "@/lib/utils"
-import { useUser } from "@/state/apis/userApi"
+import { useUser } from "@/state/apis/user"
 import { useSocket, useUI } from "@/state/store"
 import { FileIcon, FileImageIcon, FileVideoIcon } from "lucide-react"
 import Link from "next/link"

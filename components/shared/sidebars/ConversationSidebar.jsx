@@ -1,6 +1,6 @@
 "use client"
 import { Separator } from "@/components/ui/separator"
-import { useGetConversations } from "@/state/apis/conversationApi"
+import { useGetConversations } from "@/state/apis/conversation"
 import { useSocket } from "@/state/store"
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
