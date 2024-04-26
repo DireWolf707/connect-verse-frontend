@@ -75,7 +75,7 @@ const ServerSidebar = () => {
         <Separator className="mb-2 h-[2px] bg-black dark:bg-white" />
       </div>
 
-      <div className="grow overflow-auto">
+      <div className="flex grow flex-col overflow-auto">
         {groups ? (
           groups.map((group) => (
             <GroupButton
