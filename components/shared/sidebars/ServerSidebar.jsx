@@ -47,7 +47,7 @@ const GroupButton = ({ group, active }) => (
             height={48}
             width={48}
             className={cn("size-[48px] p-1 rounded-full", {
-              "bg-violet-600 text-white": active,
+              "bg-violet-600": active,
             })}
           />
         </Link>
@@ -63,7 +63,7 @@ const ServerSidebar = () => {
   const { data: groups } = useGroups()
 
   return (
-    <div className="flex flex-col px-1 py-2 pt-1">
+    <div className="flex shrink-0 flex-col px-1 py-2 pt-1">
       <div className="flex flex-col items-center gap-2">
         <MessageButton
           Icon={MailIcon}
