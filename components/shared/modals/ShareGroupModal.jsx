@@ -39,7 +39,7 @@ const ShareGroupModal = ({ group }) => {
 
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <Input defaultValue={inviteLink} />
+            <Input defaultValue={inviteLink} disabled={true} />
 
             <Button variant="ghost" size="icon" onClick={copyLinkHandler}>
               <CopyIcon />
