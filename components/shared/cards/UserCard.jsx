@@ -35,7 +35,7 @@ const UserCard = ({ user, showJoined = true, showBlock = false }) => {
   return (
     <div className="flex grow items-center justify-between px-1">
       <div className="flex gap-3">
-        <UserAvatar src={user.avatar} username={user.username} />
+        <UserAvatar src={user.avatarURL} username={user.username} />
 
         <div className="flex flex-col">
           <span className="text-sm font-semibold">{user.username}</span>

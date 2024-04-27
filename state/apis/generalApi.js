@@ -3,10 +3,11 @@ import { requestHandler } from "@/lib/request_handler"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useCallback } from "react"
 
-export const useGeneralQuery = ({ queryKey, url }) =>
+export const useGeneralQuery = ({ queryKey, url, enabled = true }) =>
   useQuery({
     queryKey,
     queryFn: () => Q.get(url).then((res) => res.data),
+    enabled,
   })
 
 export const useGeneralMutation = ({
