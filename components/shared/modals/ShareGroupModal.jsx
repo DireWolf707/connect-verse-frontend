@@ -46,14 +46,16 @@ const ShareGroupModal = ({ group }) => {
             </Button>
           </div>
 
-          <Button
-            variant="destructive"
-            className="self-end"
-            onClick={() => resetLink()}
-            disabled={isResetLinkPending}
-          >
-            Reset Link
-          </Button>
+          {group.member.role === "admin" && (
+            <Button
+              variant="destructive"
+              className="self-end"
+              onClick={() => resetLink()}
+              disabled={isResetLinkPending}
+            >
+              Reset Link
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>
