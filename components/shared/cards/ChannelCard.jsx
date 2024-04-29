@@ -1,5 +1,6 @@
-import { Pencil, TrashIcon } from "lucide-react"
 import Link from "next/link"
+import DeleteChannelModal from "../modals/DeleteChannelModal"
+import UpdateChannelModal from "../modals/UpdateChannelModal"
 
 const ChannelCard = ({ groupId, channel }) => {
   return (
@@ -8,9 +9,9 @@ const ChannelCard = ({ groupId, channel }) => {
         # {channel.name}
       </Link>
 
-      <div className="flex gap-1">
-        <Pencil className="hidden size-4 cursor-pointer group-hover:block" />
-        <TrashIcon className="hidden size-4 cursor-pointer group-hover:block" />
+      <div className="hidden gap-1 group-hover:flex">
+        <UpdateChannelModal groupId={groupId} channel={channel} />
+        <DeleteChannelModal groupId={groupId} channel={channel} />
       </div>
     </div>
   )
