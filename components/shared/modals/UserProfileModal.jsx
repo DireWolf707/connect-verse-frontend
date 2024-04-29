@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input"
 import { useDeleteAvatar, useUpdateUser, useUser } from "@/state/apis/user"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2Icon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import FileUploadButton from "../buttons/FileUploadButton"
@@ -30,6 +30,12 @@ import UserAvatar from "../user/UserAvatar"
 const formSchema = z.object({
   username: z.string().min(1).max(32),
   name: z.string().min(1).max(32),
+})
+
+const getDefaultValues = (user) => ({
+  email: user.email,
+  username: user.username,
+  name: user.name,
 })
 
 const UserProfileInput = ({ field }) => (
@@ -42,13 +48,8 @@ const UserProfileInput = ({ field }) => (
   </FormItem>
 )
 
-const getDefaultValues = (user) => ({
-  email: user.email,
-  username: user.username,
-  name: user.name,
-})
-
 const UserProfileModal = () => {
+  const [open, setOpen] = useState(false)
   const [avatar, setAvatar] = useState(null)
   const { data: user } = useUser()
   const { handler: updateUser, isPending: isUserUpdatePending } =
@@ -61,15 +62,15 @@ const UserProfileModal = () => {
     defaultValues: getDefaultValues(user),
   })
 
-  const resetAvatar = () => {
+  const resetForm = (user) => {
+    form.reset(getDefaultValues(user))
+
     if (!avatar) return
     URL.revokeObjectURL(avatar.preview)
     setAvatar(null)
   }
 
-  const modalCloseHandler = (open) => !open && resetAvatar()
-
-  const avatarDeleteHandler = () => deleteAvatar().finally(resetAvatar)
+  const avatarDeleteHandler = () => deleteAvatar().then(resetForm)
 
   const formSubmitHandler = (data) => {
     const formData = new FormData()
@@ -77,13 +78,15 @@ const UserProfileModal = () => {
     formData.append("username", data.username)
     if (avatar) formData.append("avatar", avatar)
 
-    updateUser(formData)
-      .then((user) => form.reset(getDefaultValues(user)))
-      .finally(resetAvatar)
+    updateUser(formData).then(resetForm)
   }
 
+  useEffect(() => {
+    if (!open) resetForm(user)
+  }, [open])
+
   return (
-    <Dialog onOpenChange={modalCloseHandler}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
         <UserAvatar src={user.avatarURL} username={user.username} />
       </DialogTrigger>

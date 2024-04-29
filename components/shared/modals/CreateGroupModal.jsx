@@ -26,7 +26,7 @@ import { useCreateGroup } from "@/state/apis/group"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { MessageCirclePlusIcon } from "lucide-react"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import FileUploadButton from "../buttons/FileUploadButton"
@@ -60,22 +60,26 @@ const CreateGroupModal = () => {
     defaultValues: defaultFormValues,
   })
 
-  const resetImage = () => {
+  const resetForm = () => {
+    form.reset(defaultFormValues)
+    setOpen(false)
+
     if (!image) return
     URL.revokeObjectURL(image.preview)
     setImage(null)
   }
 
-  const formSubmitHandler = async ({ name }) => {
+  const formSubmitHandler = ({ name }) => {
     const formData = new FormData()
     formData.append("name", name)
     formData.append("image", image)
 
-    await createGroup(formData)
-    resetImage()
-    form.reset(defaultFormValues)
-    setOpen(false)
+    createGroup(formData).then(resetForm)
   }
+
+  useEffect(() => {
+    if (!open) resetForm()
+  }, [open])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
