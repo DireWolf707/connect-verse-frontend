@@ -35,7 +35,7 @@ const UpdateMemberModal = ({ group }) => {
           <DialogTitle>Update Member</DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           {members ? (
             members.map((member) => (
               <MemberCard key={member.id} member={member} />
