@@ -7,15 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Form, FormField } from "@/components/ui/form"
 import { useUpdateGroup } from "@/state/apis/group"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SettingsIcon } from "lucide-react"
@@ -24,6 +16,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import FileUploadButton from "../buttons/FileUploadButton"
+import FormInput from "../inputs/FormInput"
 
 const formSchema = z.object({
   name: z.string().min(1).max(32),
@@ -32,16 +25,6 @@ const formSchema = z.object({
 const getDefaultValues = (group) => ({
   name: group.name,
 })
-
-const GroupCreateInput = ({ field }) => (
-  <FormItem>
-    <FormLabel className="capitalize">{field.name}</FormLabel>
-    <FormControl>
-      <Input {...field} className="bg-black/10 dark:bg-white/15" />
-    </FormControl>
-    <FormMessage />
-  </FormItem>
-)
 
 const UpdateGroupModal = ({ group }) => {
   const [open, setOpen] = useState(false)
@@ -106,11 +89,7 @@ const UpdateGroupModal = ({ group }) => {
             onSubmit={form.handleSubmit(formSubmitHandler)}
             className="flex flex-col gap-4"
           >
-            <FormField
-              control={form.control}
-              name="name"
-              render={GroupCreateInput}
-            />
+            <FormField control={form.control} name="name" render={FormInput} />
             <Button disabled={isUpdateGroupPending}>Update</Button>
           </form>
         </Form>

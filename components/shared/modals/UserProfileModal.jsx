@@ -9,15 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { Form, FormField } from "@/components/ui/form"
 import { useDeleteAvatar, useUpdateUser, useUser } from "@/state/apis/user"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Trash2Icon } from "lucide-react"
@@ -25,6 +17,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import FileUploadButton from "../buttons/FileUploadButton"
+import FormInput from "../inputs/FormInput"
 import UserAvatar from "../user/UserAvatar"
 
 const formSchema = z.object({
@@ -37,16 +30,6 @@ const getDefaultValues = (user) => ({
   username: user.username,
   name: user.name,
 })
-
-const UserProfileInput = ({ field }) => (
-  <FormItem>
-    <FormLabel className="capitalize">{field.name}</FormLabel>
-    <FormControl>
-      <Input {...field} className="bg-black/10 dark:bg-white/15" />
-    </FormControl>
-    <FormMessage />
-  </FormItem>
-)
 
 const UserProfileModal = () => {
   const [open, setOpen] = useState(false)
@@ -137,17 +120,17 @@ const UserProfileModal = () => {
                 control={form.control}
                 name="email"
                 disabled={true}
-                render={UserProfileInput}
+                render={FormInput}
               />
               <FormField
                 control={form.control}
                 name="username"
-                render={UserProfileInput}
+                render={FormInput}
               />
               <FormField
                 control={form.control}
                 name="name"
-                render={UserProfileInput}
+                render={FormInput}
               />
               <DialogFooter>
                 <Button disabled={isUserUpdatePending}>Save changes</Button>
