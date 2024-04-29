@@ -21,7 +21,7 @@ const DeleteChannelModal = ({ groupId, channel }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger>
-        <Trash2Icon className="size-4 fill-red-500 stroke-red-300" />
+        <Trash2Icon className="size-4 stroke-red-400" />
       </DialogTrigger>
 
       <DialogContent>
