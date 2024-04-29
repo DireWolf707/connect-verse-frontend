@@ -24,10 +24,10 @@ const defaultFormValues = {
   name: "",
 }
 
-const CreateChannelModal = ({ group, type }) => {
+const CreateChannelModal = ({ groupId, type }) => {
   const [open, setOpen] = useState(false)
   const { handler: createChannel, isPending: isCreateChannelPending } =
-    useCreateChannel(group.id)
+    useCreateChannel(groupId)
 
   const form = useForm({
     resolver: zodResolver(formSchema),
