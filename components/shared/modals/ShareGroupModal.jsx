@@ -15,7 +15,7 @@ import { toast } from "sonner"
 const ShareGroupModal = ({ group }) => {
   const [open, setOpen] = useState(false)
   const [inviteLink] = useState(
-    process.env.NEXT_PUBLIC_SERVER_URL + "/join/" + group.inviteCode
+    window.location.origin + "/join/" + group.inviteCode
   )
   const { handler: resetLink, isPending: isResetLinkPending } = useResetLink(
     group.id
