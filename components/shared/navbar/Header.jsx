@@ -11,9 +11,9 @@ const Header = () => {
   if (pathname.startsWith("/conversation") && otherUser)
     return <UserCard user={otherUser} showJoined={false} showBlock={true} />
 
-  if (pathname.startsWith("/server") && channelName)
+  if (pathname.startsWith("/group") && channelName)
     return (
-      <div className="flex items-center gap-1">
+      <div className="ml-2 flex w-full items-center gap-1">
         <HashIcon />
         <span className="text-xl font-medium">{channelName}</span>
       </div>
