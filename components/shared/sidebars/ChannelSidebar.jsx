@@ -11,17 +11,19 @@ import UpdateGroupModal from "../modals/UpdateGroupModal"
 import UpdateMemberModal from "../modals/UpdateMemberModal"
 import MemberRole from "../user/MemberRole"
 
-const RenderChannels = ({ groupId, channels, type }) => (
+const RenderChannels = ({ group, channels, type }) => (
   <div className="flex flex-col gap-1">
     <div className="flex items-center justify-between">
       <span className="text-sm font-bold">{type.toUpperCase()} CHANNELS</span>
 
-      <CreateChannelModal groupId={groupId} type={type} />
+      {group.member.role === "admin" && (
+        <CreateChannelModal groupId={group.id} type={type} />
+      )}
     </div>
 
     <div className="text-main flex flex-col gap-0.5 pl-4 text-sm">
       {channels.map((channel) => (
-        <ChannelCard key={channel.id} groupId={groupId} channel={channel} />
+        <ChannelCard key={channel.id} group={group} channel={channel} />
       ))}
     </div>
   </div>
@@ -65,19 +67,19 @@ const ChannelSidebar = () => {
           <Separator className="bg-black dark:bg-white" />
 
           <RenderChannels
-            groupId={groupId}
+            group={group}
             channels={group.textChannels}
             type="text"
           />
 
           <RenderChannels
-            groupId={groupId}
+            group={group}
             channels={group.audioChannels}
             type="audio"
           />
 
           <RenderChannels
-            groupId={groupId}
+            group={group}
             channels={group.videoChannels}
             type="video"
           />
