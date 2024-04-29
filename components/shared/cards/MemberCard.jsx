@@ -1,7 +1,7 @@
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useUpdateMember } from "@/state/apis/group"
@@ -12,7 +12,8 @@ import MemberRole from "../user/MemberRole"
 
 const MemberCard = ({ member: _member }) => {
   const [member, setMember] = useState(_member)
-  const { handler: updateMember } = useUpdateMember(member.groupId, member.id)
+  const { handler: updateMember, isPending: isUpdateUserPending } =
+    useUpdateMember(member.groupId, member.id)
 
   const updateMemberHandler = async (data) => {
     const updatedMember = await updateMember(data)
@@ -29,40 +30,45 @@ const MemberCard = ({ member: _member }) => {
         {member.role !== "admin" && (
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <CircleEllipsisIcon />
+              <CircleEllipsisIcon className="text-main" />
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent>
+            <DropdownMenuContent className="flex flex-col gap-1">
               {member.role === "guest" ? (
-                <DropdownMenuItem
+                <Button
+                  variant="secondary"
                   onClick={() => updateMemberHandler({ role: "mod" })}
+                  disabled={isUpdateUserPending}
                 >
                   <MemberRole role="mod" />
-                </DropdownMenuItem>
+                </Button>
               ) : (
-                <DropdownMenuItem
+                <Button
+                  variant="secondary"
                   onClick={() => updateMemberHandler({ role: "guest" })}
+                  disabled={isUpdateUserPending}
                 >
                   <MemberRole role="guest" />
-                </DropdownMenuItem>
+                </Button>
               )}
 
               {member.isBanned ? (
-                <DropdownMenuItem
-                  className="gap-1 text-green-500"
+                <Button
                   onClick={() => updateMemberHandler({ isBanned: false })}
+                  disabled={isUpdateUserPending}
                 >
-                  <CheckCircle2Icon className="size-4" />
+                  <CheckCircle2Icon className="mr-1 size-4" />
                   Un-Ban
-                </DropdownMenuItem>
+                </Button>
               ) : (
-                <DropdownMenuItem
-                  className="gap-1 text-red-500"
+                <Button
+                  variant="destructive"
                   onClick={() => updateMemberHandler({ isBanned: true })}
+                  disabled={isUpdateUserPending}
                 >
-                  <BanIcon className="size-4" />
+                  <BanIcon className="mr-1 size-4" />
                   Ban
-                </DropdownMenuItem>
+                </Button>
               )}
             </DropdownMenuContent>
           </DropdownMenu>
