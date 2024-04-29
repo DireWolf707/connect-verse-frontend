@@ -14,7 +14,10 @@ import { useState } from "react"
 const DeleteGroupModal = ({ group }) => {
   const [open, setOpen] = useState(false)
   const [isAdmin] = useState(group.member.role === "admin")
-  const { handler: deleteGroup } = useDeleteGroup(group.id, { isAdmin })
+  const { handler: deleteGroup, isPending: isDeleteGroupPending } =
+    useDeleteGroup(group.id, { isAdmin })
+
+  const deleteGroupHandler = () => deleteGroup().then(() => setOpen(false))
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -34,7 +37,11 @@ const DeleteGroupModal = ({ group }) => {
           <DialogDescription>Are you absolutely sure?</DialogDescription>
         </DialogHeader>
 
-        <Button variant="destructive" onClick={() => deleteGroup()}>
+        <Button
+          variant="destructive"
+          onClick={deleteGroupHandler}
+          disabled={isDeleteGroupPending}
+        >
           Confirm
         </Button>
       </DialogContent>
