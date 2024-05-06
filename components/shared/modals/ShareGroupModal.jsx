@@ -9,14 +9,16 @@ import {
 import { Input } from "@/components/ui/input"
 import { useResetLink } from "@/state/apis/group"
 import { CopyIcon, Share2Icon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
+
+const getInviteLink = (inviteCode) =>
+  window.location.origin + "/join/" + inviteCode
 
 const ShareGroupModal = ({ group }) => {
   const [open, setOpen] = useState(false)
-  const [inviteLink] = useState(
-    window.location.origin + "/join/" + group.inviteCode
-  )
+  const [inviteLink, setInviteLink] = useState(null)
+
   const { handler: resetLink, isPending: isResetLinkPending } = useResetLink(
     group.id
   )
@@ -25,6 +27,10 @@ const ShareGroupModal = ({ group }) => {
     await navigator.clipboard.writeText(inviteLink)
     toast.success("Copied link to clipboard successfully!")
   }
+
+  useEffect(() => {
+    setInviteLink(getInviteLink(group.inviteCode))
+  }, [group])
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -39,7 +45,7 @@ const ShareGroupModal = ({ group }) => {
 
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <Input defaultValue={inviteLink} disabled={true} />
+            <Input value={inviteLink} disabled={true} />
 
             <Button variant="ghost" size="icon" onClick={copyLinkHandler}>
               <CopyIcon />
