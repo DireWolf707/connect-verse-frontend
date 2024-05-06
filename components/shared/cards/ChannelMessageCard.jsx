@@ -7,9 +7,9 @@ import { useEffect, useState } from "react"
 import UserAvatar from "../user/UserAvatar"
 import RenderMessage from "./RenderMessage"
 
-const ChannelMessageCard = ({ channel, message: _message }) => {
+const ChannelMessageCard = ({ channel, member, message: _message }) => {
   const socket = useSocket((state) => state.socket)
-  const [isMe] = useState(channel.member.userId == _message.user.id)
+  const [isMe] = useState(member.userId == _message.user.id)
   const [editMode, setEditMode] = useState(false)
   const [message, setMessage] = useState(_message)
   const [content, setContent] = useState(message.content)
@@ -89,7 +89,7 @@ const ChannelMessageCard = ({ channel, message: _message }) => {
             )}
           </div>
 
-          {(isMe || channel.member.role != "guest") &&
+          {(isMe || member.role != "guest") &&
             !message.isDeleted &&
             !editMode && (
               <>

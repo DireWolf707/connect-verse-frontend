@@ -37,6 +37,7 @@ const ChannelSidebar = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [group, setGroup] = useState(null)
+  const [member, setMember] = useState(null)
   const socket = useSocket((state) => state.socket)
   const { groupId } = useParams()
   const { data: _group } = useGroup(groupId)
@@ -48,6 +49,12 @@ const ChannelSidebar = () => {
     const newChannelKey = key(groupKey, "new_channel")
     const updateGroupKey = key(groupKey, "group_update")
     const deleteGroupKey = key(groupKey, "group_delete")
+    const groupSelfMemberUpdateKey = key(
+      "group",
+      groupId,
+      "self_member_update",
+      _group.member.userId
+    )
 
     const onNewChannel = (newChannel) => {
       switch (newChannel.type) {
@@ -74,18 +81,24 @@ const ChannelSidebar = () => {
 
     const onDeleteGroup = () => router.replace("/")
 
+    const onSelfMemberUpdate = (updatedMember) => setMember(updatedMember)
+
     setGroup(_group)
+    setMember(_group.member)
 
     socket.on(newChannelKey, onNewChannel)
     socket.on(updateGroupKey, onUpdateGroup)
     socket.on(deleteGroupKey, onDeleteGroup)
+    socket.on(groupSelfMemberUpdateKey, onSelfMemberUpdate)
 
     return () => {
       queryClient.removeQueries({ queryKey: ["group", groupId] })
       socket.off(newChannelKey, onNewChannel)
       socket.off(updateGroupKey, onUpdateGroup)
       socket.off(deleteGroupKey, onDeleteGroup)
+      socket.off(groupSelfMemberUpdateKey, onSelfMemberUpdate)
       socket.emit("unsub_group", groupId)
+      socket.emit("unsub_self_member_update", groupId, _group.member.id)
     }
   }, [_group])
 
@@ -105,7 +118,7 @@ const ChannelSidebar = () => {
 
               <span className="text-main text-2xl">{group.name}</span>
 
-              <MemberRole role={group.member.role} />
+              <MemberRole role={member.role} />
             </div>
 
             <div className="flex gap-4">

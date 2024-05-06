@@ -20,6 +20,7 @@ const Channel = () => {
   const bottomRef = useRef(null)
   const [messages, setMessages] = useState(null)
   const [channel, setChannel] = useState(null)
+  const [member, setMember] = useState(null)
   const [lastMsg, setLastMessage] = useState(null)
   const [stickToBottom, setStickToBottom] = useState(null)
   const { observe } = useInView({
@@ -35,6 +36,12 @@ const Channel = () => {
     const newMessageKey = key(channelKey, "new_message")
     const updateChannelKey = key(channelKey, "channel_update")
     const deleteChannelKey = key(channelKey, "channel_delete")
+    const groupSelfMemberUpdateKey = key(
+      "group",
+      groupId,
+      "self_member_update",
+      _channel.member.userId
+    )
 
     const onNewMsg = (newMsg) => {
       setMessages((pv) => [...pv, newMsg])
@@ -46,18 +53,23 @@ const Channel = () => {
 
     const onDeleteChannel = () => router.replace("../")
 
+    const onSelfMemberUpdate = (updatedMember) => setMember(updatedMember)
+
     setMessages(_channel.messages)
     setChannel(_channel)
+    setMember(_channel.member)
 
     socket.on(newMessageKey, onNewMsg)
     socket.on(updateChannelKey, onUpdateChannel)
     socket.on(deleteChannelKey, onDeleteChannel)
+    socket.on(groupSelfMemberUpdateKey, onSelfMemberUpdate)
 
     return () => {
       resetChannelName()
       socket.off(newMessageKey, onNewMsg)
       socket.off(updateChannelKey, onUpdateChannel)
       socket.off(deleteChannelKey, onDeleteChannel)
+      socket.off(groupSelfMemberUpdateKey, onSelfMemberUpdate)
       queryClient.removeQueries({ queryKey: ["channel", channelId] })
       socket.emit("unsub_channel", channelId)
     }
@@ -76,7 +88,7 @@ const Channel = () => {
       // first render
       !lastMsg ||
       // my new message (setLastMessage only on new message)
-      lastMsg.user.id === channel.member.userId ||
+      lastMsg.user.id === member.userId ||
       // when at bottom
       stickToBottom
     )
@@ -93,6 +105,7 @@ const Channel = () => {
             key={message.id}
             channel={channel}
             message={message}
+            member={member}
           />
         ))}
 
