@@ -1,28 +1,30 @@
 import { Textarea } from "@/components/ui/textarea"
 import { cn, formatDateWithTime, key } from "@/lib/utils"
-import { useDeleteMessage, useEditMessage } from "@/state/apis/conversation"
+import { useDeleteMessage, useUpdateMessage } from "@/state/apis/group"
 import { useSocket } from "@/state/store"
 import { CheckIcon, SquarePenIcon, Trash2Icon, XIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import UserAvatar from "../user/UserAvatar"
 import RenderMessage from "./RenderMessage"
 
-const MessageCard = ({ me, user, otherUserId, message: _message }) => {
+const ChannelMessageCard = ({ channel, message: _message }) => {
   const socket = useSocket((state) => state.socket)
-  const [isMe] = useState(me.id == user.id)
+  const [isMe] = useState(channel.member.userId == _message.user.id)
   const [editMode, setEditMode] = useState(false)
   const [message, setMessage] = useState(_message)
   const [content, setContent] = useState(message.content)
 
-  const { handler: deleteMsg } = useDeleteMessage({
-    otherUserId,
-    messageId: message.id,
-  })
+  const { handler: deleteMsg } = useDeleteMessage(
+    channel.groupId,
+    channel.id,
+    _message.id
+  )
 
-  const { handler: editMsg } = useEditMessage({
-    otherUserId,
-    messageId: message.id,
-  })
+  const { handler: editMsg } = useUpdateMessage(
+    channel.groupId,
+    channel.id,
+    _message.id
+  )
 
   const editModeCloseHandler = () => {
     setEditMode(false)
@@ -33,9 +35,19 @@ const MessageCard = ({ me, user, otherUserId, message: _message }) => {
     editMsg({ content }).finally(() => setEditMode(false))
 
   useEffect(() => {
-    socket.on(key("modify_msg", message.id), setMessage)
+    const channelKey = key("channel", channel.id)
+    const updateMessageKey = key(channelKey, "update_message", message.id)
+    const deleteMessageKey = key(channelKey, "delete_message", message.id)
 
-    return () => socket.off(key("modify_msg", message.id), setMessage)
+    socket.on(updateMessageKey, setMessage)
+    socket.on(deleteMessageKey, () =>
+      setMessage((pv) => ({ ...pv, isDeleted: true, isEdited: false }))
+    )
+
+    return () => {
+      socket.off(updateMessageKey, setMessage)
+      socket.off(deleteMessageKey, setMessage)
+    }
   }, [])
 
   return (
@@ -45,12 +57,15 @@ const MessageCard = ({ me, user, otherUserId, message: _message }) => {
       })}
     >
       <div className="sticky top-0 self-start">
-        <UserAvatar src={user.avatar} username={user.username} />
+        <UserAvatar
+          src={message.user.avatar}
+          username={message.user.username}
+        />
       </div>
 
       <div className="group flex flex-col gap-1">
         <span className={cn("text-xs font-bold", { "self-end": isMe })}>
-          {user.username}
+          {message.user.username}
         </span>
 
         <div
@@ -74,21 +89,23 @@ const MessageCard = ({ me, user, otherUserId, message: _message }) => {
             )}
           </div>
 
-          {isMe && !message.isDeleted && !editMode && (
-            <>
-              <Trash2Icon
-                onClick={() => deleteMsg()}
-                className="hidden size-7 cursor-pointer rounded-full stroke-red-400 p-1.5 hover:bg-red-500 hover:stroke-white group-hover:block"
-              />
-
-              {message.type === "text" && (
-                <SquarePenIcon
-                  onClick={() => setEditMode(true)}
-                  className="hidden size-7 cursor-pointer rounded-full stroke-violet-400 p-1.5 hover:bg-violet-500 hover:stroke-white group-hover:block"
+          {(isMe || channel.member.role != "guest") &&
+            !message.isDeleted &&
+            !editMode && (
+              <>
+                <Trash2Icon
+                  onClick={() => deleteMsg()}
+                  className="hidden size-7 cursor-pointer rounded-full stroke-red-400 p-1.5 hover:bg-red-500 hover:stroke-white group-hover:block"
                 />
-              )}
-            </>
-          )}
+
+                {isMe && message.type === "text" && (
+                  <SquarePenIcon
+                    onClick={() => setEditMode(true)}
+                    className="hidden size-7 cursor-pointer rounded-full stroke-violet-400 p-1.5 hover:bg-violet-500 hover:stroke-white group-hover:block"
+                  />
+                )}
+              </>
+            )}
 
           {editMode && (
             <>
@@ -126,4 +143,4 @@ const MessageCard = ({ me, user, otherUserId, message: _message }) => {
   )
 }
 
-export default MessageCard
+export default ChannelMessageCard
