@@ -6,12 +6,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
+import { cn, key } from "@/lib/utils"
 import { useGroups } from "@/state/apis/group"
+import { useUser } from "@/state/apis/user"
+import { useSocket } from "@/state/store"
 import { MailIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 import LogoutButton from "../buttons/LogoutButton"
 import ThemeToggleButton from "../buttons/ThemeToggleButton"
 import SpinnerText from "../loading/SpinnerText"
@@ -36,31 +39,63 @@ const MessageButton = ({ Icon, text, active, href }) => (
   </TooltipProvider>
 )
 
-const GroupButton = ({ group, active }) => (
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Link href={"/group/" + group.id}>
-          <Image
-            src={group.imageURL}
-            alt="image"
-            height={48}
-            width={48}
-            className={cn("size-[48px] p-1 rounded-full", {
-              "bg-violet-600": active,
-            })}
-          />
-        </Link>
-      </TooltipTrigger>
+const GroupButton = ({ group: _group, active }) => {
+  const socket = useSocket((state) => state.socket)
+  const [group, setGroup] = useState(_group)
+  const [isHidden, setIsHidden] = useState(false)
 
-      <TooltipContent side="right">{group.name}</TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-)
+  useEffect(() => {
+    const memberGroupUpdateKey = key("member_group_update", group.id)
+    const memberGroupDeleteKey = key("member_group_delete", group.id)
+
+    const onGroupUpdate = (updatedGroup) => setGroup(updatedGroup)
+
+    const onGroupDelete = () => setIsHidden(true)
+
+    socket.on(memberGroupUpdateKey, onGroupUpdate)
+    socket.on(memberGroupDeleteKey, onGroupDelete)
+
+    return () => {
+      socket.off(memberGroupUpdateKey, onGroupUpdate)
+      socket.off(memberGroupDeleteKey, onGroupDelete)
+    }
+  }, [])
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            href={"/group/" + group.id}
+            className={cn({ hidden: isHidden })}
+          >
+            <Image
+              src={group.imageURL}
+              alt="image"
+              height={48}
+              width={48}
+              className={cn("size-[48px] p-1 rounded-full", {
+                "bg-violet-600": active,
+              })}
+            />
+          </Link>
+        </TooltipTrigger>
+
+        <TooltipContent side="right">{group.name}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
 
 const ServerSidebar = () => {
   const pathname = usePathname()
+  const socket = useSocket((state) => state.socket)
   const { data: groups } = useGroups()
+  const { data: me } = useUser()
+
+  useEffect(() => {
+    return () => socket.emit("unsub_member_group", me.id)
+  }, [])
 
   return (
     <div className="flex shrink-0 flex-col px-1 py-2 pt-1">
