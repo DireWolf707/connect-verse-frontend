@@ -1,16 +1,19 @@
 import { useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
 import { useGeneralMutation, useGeneralQuery } from "./generalApi"
 
 export const useCreateGroup = () => {
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   return useGeneralMutation({
     url: "/group",
     loadingMsg: "Creating group",
     successMsg: "Group created",
-    // TODO: sort
-    onSuccess: (newGroup) =>
-      queryClient.setQueryData(["groups"], (pv) => [...pv, newGroup]),
+    onSuccess: (newGroup) => {
+      queryClient.setQueryData(["groups"], (pv) => [...pv, newGroup])
+      router.push("/group/" + newGroup.id)
+    },
   })
 }
 
@@ -22,22 +25,16 @@ export const useGroups = () =>
 
 export const useGroupInfo = (inviteCode) =>
   useGeneralQuery({
-    url: "/join/" + inviteCode,
+    url: "/group/join/" + inviteCode,
     queryKey: ["group_info", inviteCode],
   })
 
-export const useJoinGroup = (inviteCode) => {
-  const queryClient = useQueryClient()
-
-  return useGeneralMutation({
-    url: "/join/" + inviteCode,
+export const useJoinGroup = (inviteCode) =>
+  useGeneralMutation({
+    url: "/group/join/" + inviteCode,
     loadingMsg: "Joining group",
     successMsg: "Group joined",
-    // TODO: sort
-    onSuccess: (newGroup) =>
-      queryClient.setQueryData(["groups"], (pv) => [...pv, newGroup]),
   })
-}
 
 export const useGroup = (groupId) =>
   useGeneralQuery({
@@ -53,19 +50,22 @@ export const useUpdateGroup = (groupId) =>
     successMsg: "Group updated",
   })
 
-export const useDeleteGroup = (groupId, { memberRole }) => {
+export const useDeleteGroup = (groupId, { isAdmin }) => {
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   let loadingMsg = "Deleting group"
   let successMsg = "Group deleted"
   let onSuccess = null
-  if (memberRole !== "admin") {
+  if (!isAdmin) {
     loadingMsg = "Leaving group"
     successMsg = "Group left"
-    onSuccess = () =>
+    onSuccess = () => {
       queryClient.setQueryData(["groups"], (pv) =>
         pv.filter((group) => group.id !== groupId)
       )
+      router.replace("/")
+    }
   }
 
   return useGeneralMutation({
@@ -84,10 +84,11 @@ export const useResetLink = (groupId) =>
     successMsg: "Link reset",
   })
 
-export const useMembers = (groupId) =>
+export const useMembers = (groupId, { enabled }) =>
   useGeneralQuery({
     url: "/group/" + groupId + "/members",
     queryKey: ["members", groupId],
+    enabled,
   })
 
 export const useUpdateMember = (groupId, memberId) =>
@@ -118,7 +119,7 @@ export const useUpdateChannel = (groupId, channelId) =>
     successMsg: "Channel updated",
   })
 
-export const useDeletedChannel = (groupId, channelId) =>
+export const useDeleteChannel = (groupId, channelId) =>
   useGeneralMutation({
     url: "/group/" + groupId + "/channel/" + channelId,
     method: "delete",
@@ -129,6 +130,14 @@ export const useDeletedChannel = (groupId, channelId) =>
 export const useCreateMessage = (groupId, channelId) =>
   useGeneralMutation({
     url: "/group/" + groupId + "/channel/" + channelId + "/message",
+  })
+
+export const useUploadAttachment = (groupId, channelId, setProgress) =>
+  useGeneralMutation({
+    url: "/group/" + groupId + "/channel/" + channelId + "/message",
+    setProgress,
+    loadingMsg: "Uploading attachment",
+    successMsg: "Attachment Uploaded",
   })
 
 export const useUpdateMessage = (groupId, channelId, messageId) =>

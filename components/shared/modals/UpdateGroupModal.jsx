@@ -38,7 +38,6 @@ const UpdateGroupModal = ({ group }) => {
   })
 
   const resetForm = () => {
-    // TODO: check socketio update
     form.reset(getDefaultValues(group))
     setOpen(false)
 
