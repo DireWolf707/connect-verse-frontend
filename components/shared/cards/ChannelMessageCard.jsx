@@ -38,15 +38,15 @@ const ChannelMessageCard = ({ channel, message: _message }) => {
     const channelKey = key("channel", channel.id)
     const updateMessageKey = key(channelKey, "update_message", message.id)
     const deleteMessageKey = key(channelKey, "delete_message", message.id)
+    const onDeleteMessage = () =>
+      setMessage((pv) => ({ ...pv, isDeleted: true, isEdited: false }))
 
     socket.on(updateMessageKey, setMessage)
-    socket.on(deleteMessageKey, () =>
-      setMessage((pv) => ({ ...pv, isDeleted: true, isEdited: false }))
-    )
+    socket.on(deleteMessageKey, onDeleteMessage)
 
     return () => {
       socket.off(updateMessageKey, setMessage)
-      socket.off(deleteMessageKey, setMessage)
+      socket.off(deleteMessageKey, onDeleteMessage)
     }
   }, [])
 
