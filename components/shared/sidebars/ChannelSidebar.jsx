@@ -1,7 +1,11 @@
 import { Separator } from "@/components/ui/separator"
+import { key } from "@/lib/utils"
 import { useGroup } from "@/state/apis/group"
+import { useSocket } from "@/state/store"
+import { useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import ChannelCard from "../cards/ChannelCard"
 import SpinnerText from "../loading/SpinnerText"
 import CreateChannelModal from "../modals/CreateChannelModal"
@@ -30,8 +34,60 @@ const RenderChannels = ({ group, channels, type }) => (
 )
 
 const ChannelSidebar = () => {
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  const [group, setGroup] = useState(null)
+  const socket = useSocket((state) => state.socket)
   const { groupId } = useParams()
-  const { data: group } = useGroup(groupId)
+  const { data: _group } = useGroup(groupId)
+
+  useEffect(() => {
+    if (!_group) return
+
+    const groupKey = key("group", groupId)
+    const newChannelKey = key(groupKey, "new_channel")
+    const updateGroupKey = key(groupKey, "group_update")
+    const deleteGroupKey = key(groupKey, "group_delete")
+
+    const onNewChannel = (newChannel) => {
+      switch (newChannel.type) {
+        case "text":
+          return setGroup((pv) => ({
+            ...pv,
+            textChannels: [...pv.textChannels, newChannel],
+          }))
+        case "audio":
+          return setGroup((pv) => ({
+            ...pv,
+            audioChannels: [...pv.audioChannels, newChannel],
+          }))
+        case "video":
+          return setGroup((pv) => ({
+            ...pv,
+            videoChannels: [...pv.videoChannels, newChannel],
+          }))
+      }
+    }
+
+    const onUpdateGroup = (updatedGroup) =>
+      setGroup((pv) => ({ ...pv, ...updatedGroup }))
+
+    const onDeleteGroup = () => router.replace("/")
+
+    setGroup(_group)
+
+    socket.on(newChannelKey, onNewChannel)
+    socket.on(updateGroupKey, onUpdateGroup)
+    socket.on(deleteGroupKey, onDeleteGroup)
+
+    return () => {
+      queryClient.removeQueries({ queryKey: ["group", groupId] })
+      socket.off(newChannelKey, onNewChannel)
+      socket.off(updateGroupKey, onUpdateGroup)
+      socket.off(deleteGroupKey, onDeleteGroup)
+      socket.emit("unsub_group", groupId)
+    }
+  }, [_group])
 
   return (
     <div className="flex grow flex-col rounded-tl-xl bg-[#dfe7e8] dark:bg-[#403544]">
