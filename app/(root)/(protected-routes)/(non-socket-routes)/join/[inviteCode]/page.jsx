@@ -8,12 +8,19 @@ import { useParams, useRouter } from "next/navigation"
 const GroupInfo = () => {
   const { inviteCode } = useParams()
   const router = useRouter()
-  const { data: group } = useGroupInfo(inviteCode)
+  const { data: group, error } = useGroupInfo(inviteCode)
   const { mutateAsync: joinGroup, isPending: isJoinGroupPending } =
     useJoinGroup(inviteCode)
 
   const joinGroupHandler = () =>
     joinGroup().then(() => router.replace("/group/" + group.id))
+
+  if (error)
+    return (
+      <div className="flex grow items-center justify-center">
+        <h1>Invalid Link!</h1>
+      </div>
+    )
 
   return (
     <div className="flex size-full items-center justify-center">
