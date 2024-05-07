@@ -157,3 +157,9 @@ export const useDeleteMessage = (groupId, channelId, messageId) =>
     loadingMsg: "Deleting message",
     successMsg: "Message deleted",
   })
+
+export const useToken = (groupId, channelId) =>
+  useGeneralQuery({
+    url: "/group/" + groupId + "/channel/" + channelId + "/token",
+    queryKey: ["channel", channelId],
+  })
