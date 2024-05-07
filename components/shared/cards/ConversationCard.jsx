@@ -52,7 +52,7 @@ const ConversationCard = ({ user, conversationId, message: _message }) => {
       href={`/conversation/${user.id}`}
       onClick={() => sidebarOpen && closeSidebar()}
     >
-      <UserAvatar src={user.avatar} username={user.username} />
+      <UserAvatar src={user.avatarURL} username={user.username} />
 
       <div className="flex grow flex-col gap-0.5">
         <div className="flex items-center justify-between gap-3">

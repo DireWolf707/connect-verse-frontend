@@ -58,7 +58,7 @@ const ChannelMessageCard = ({ channel, member, message: _message }) => {
     >
       <div className="sticky top-0 self-start">
         <UserAvatar
-          src={message.user.avatar}
+          src={message.user.avatarURL}
           username={message.user.username}
         />
       </div>
