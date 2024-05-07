@@ -2,6 +2,7 @@
 import { getContentType } from "@/lib/utils"
 import { useCallback } from "react"
 import { useDropzone } from "react-dropzone"
+import { toast } from "sonner"
 
 const FileUploadButton = ({ file, setFile, disabled, onlyImage = false }) => {
   const onDrop = useCallback((files) => {
@@ -9,6 +10,8 @@ const FileUploadButton = ({ file, setFile, disabled, onlyImage = false }) => {
     if (!newFile) return
 
     if (file) URL.revokeObjectURL(file.preview)
+
+    if (newFile.size > 10 * 2 ** 20) return toast.error("Max file size is 10MB")
 
     if (getContentType(newFile) === "file") newFile.preview = "/icons/file.svg"
     else newFile.preview = URL.createObjectURL(newFile)
