@@ -51,7 +51,8 @@ const TextChannel = () => {
     const onUpdateChannel = (updatedChannel) =>
       setChannel((pv) => ({ ...pv, ...updatedChannel }))
 
-    const onDeleteChannel = () => router.replace("../")
+    const onDeleteChannel = () =>
+      router.replace(window.location.origin + "/group/" + groupId)
 
     const onSelfMemberUpdate = (updatedMember) => setMember(updatedMember)
 

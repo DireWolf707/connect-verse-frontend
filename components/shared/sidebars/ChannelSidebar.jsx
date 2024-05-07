@@ -81,7 +81,10 @@ const ChannelSidebar = () => {
 
     const onDeleteGroup = () => router.replace("/")
 
-    const onSelfMemberUpdate = (updatedMember) => setMember(updatedMember)
+    const onSelfMemberUpdate = (updatedMember) => {
+      if (updatedMember.isBanned) window.location.replace("/")
+      else setMember(updatedMember)
+    }
 
     setGroup(_group)
     setMember(_group.member)
