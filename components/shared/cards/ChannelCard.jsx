@@ -34,7 +34,11 @@ const ChannelCard = ({ group, channel: _channel }) => {
         hidden: isHidden,
       })}
     >
-      <Link href={"/group/" + group.id + "/channel/" + channel.id}>
+      <Link
+        href={
+          "/group/" + group.id + "/channel/" + channel.id + "/" + channel.type
+        }
+      >
         # {channel.name}
       </Link>
 

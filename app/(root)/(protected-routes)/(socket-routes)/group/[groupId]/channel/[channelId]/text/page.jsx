@@ -10,7 +10,7 @@ import { useParams, useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { useInView } from "react-cool-inview"
 
-const Channel = () => {
+const TextChannel = () => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const { groupId, channelId } = useParams()
@@ -122,4 +122,4 @@ const Channel = () => {
   )
 }
 
-export default Channel
+export default TextChannel
