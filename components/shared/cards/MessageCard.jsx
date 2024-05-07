@@ -45,7 +45,7 @@ const MessageCard = ({ me, user, otherUserId, message: _message }) => {
       })}
     >
       <div className="sticky top-0 self-start">
-        <UserAvatar src={user.avatar} username={user.username} />
+        <UserAvatar src={user.avatarURL} username={user.username} />
       </div>
 
       <div className="group flex flex-col gap-1">
